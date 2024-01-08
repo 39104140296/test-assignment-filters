@@ -1,11 +1,15 @@
-<script setup></script>
+<script setup>
+import HomePage from '@/views/HomePage.vue'
+</script>
 
 <template>
   <header>
     <div class="wrapper"></div>
   </header>
 
-  <main></main>
+  <main>
+    <HomePage />
+  </main>
 </template>
 
 <style scoped>
