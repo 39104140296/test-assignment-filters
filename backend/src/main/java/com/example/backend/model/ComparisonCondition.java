@@ -1,13 +1,6 @@
 package com.example.backend.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "comparison_conditions")
@@ -15,44 +8,38 @@ public class ComparisonCondition {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long condition_id;
+    private Integer conditionId;
 
     @ManyToOne
     @JoinColumn(name = "criteria_type_id", nullable = false)
     private CriteriaType criteriaType;
 
-    @Column(name = "condition_name", nullable = false, length = 255)
-    private String condition_name;
+    @Column(nullable = false)
+    private String conditionName;
 
-    public ComparisonCondition() {
-    }
-
-    public ComparisonCondition(CriteriaType criteriaType, String condition_name) {
-        this.criteriaType = criteriaType;
-        this.condition_name = condition_name;
-    }
-
-    public Long getConditionId() {
-        return condition_id;
-    }
-
-    public void setConditionId(Long condition_id) {
-        this.condition_id = condition_id;
+    // Getters
+    public Integer getConditionId() {
+        return conditionId;
     }
 
     public CriteriaType getCriteriaType() {
         return criteriaType;
     }
 
+    public String getConditionName() {
+        return conditionName;
+    }
+
+    // Setters
+    public void setConditionId(Integer conditionId) {
+        this.conditionId = conditionId;
+    }
+
     public void setCriteriaType(CriteriaType criteriaType) {
         this.criteriaType = criteriaType;
     }
 
-    public String getConditionName() {
-        return condition_name;
-    }
-
-    public void setConditionName(String condition_name) {
-        this.condition_name = condition_name;
+    public void setConditionName(String conditionName) {
+        this.conditionName = conditionName;
     }
 }

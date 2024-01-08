@@ -1,13 +1,8 @@
 package com.example.backend.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "filter_criteria")
@@ -15,70 +10,41 @@ public class FilterCriteria {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long criteria_id;
+    private Integer criteriaId;
 
     @ManyToOne
-    @JoinColumn(name = "filter_id", nullable = false)
+    @JoinColumn(name = "filter_id")
+    @JsonBackReference
     private Filter filter;
 
     @ManyToOne
-    @JoinColumn(name = "criteria_type_id", nullable = false)
+    @JoinColumn(name = "criteria_type_id")
     private CriteriaType criteriaType;
 
-    @ManyToOne
-    @JoinColumn(name = "condition_id", nullable = false)
-    private ComparisonCondition condition;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "condition_id")
+    private ComparisonCondition comparisonCondition;
 
-    @Column(name = "value", length = 255)
+    @Column(name = "\"value\"", nullable = false)
     private String value;
 
-    public FilterCriteria() {
-    }
-
-    public FilterCriteria(Filter filter, CriteriaType criteriaType, ComparisonCondition condition, String value) {
-        this.filter = filter;
-        this.criteriaType = criteriaType;
-        this.condition = condition;
-        this.value = value;
-    }
-
-    public Long getCriteriaId() {
-        return criteria_id;
-    }
-
-    public void setCriteriaId(Long criteria_id) {
-        this.criteria_id = criteria_id;
+    public Integer getCriteriaId() {
+        return criteriaId;
     }
 
     public Filter getFilter() {
         return filter;
     }
 
-    public void setFilter(Filter filter) {
-        this.filter = filter;
-    }
-
     public CriteriaType getCriteriaType() {
         return criteriaType;
     }
 
-    public void setCriteriaType(CriteriaType criteriaType) {
-        this.criteriaType = criteriaType;
-    }
-
-    public ComparisonCondition getCondition() {
-        return condition;
-    }
-
-    public void setCondition(ComparisonCondition condition) {
-        this.condition = condition;
+    public ComparisonCondition getComparisonCondition() {
+        return comparisonCondition;
     }
 
     public String getValue() {
         return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
     }
 }

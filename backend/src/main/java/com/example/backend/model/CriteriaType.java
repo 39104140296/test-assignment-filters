@@ -1,11 +1,6 @@
 package com.example.backend.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "criteria_types")
@@ -13,43 +8,37 @@ public class CriteriaType {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long criteria_type_id;
+    private Integer criteriaTypeId;
 
-    @Column(name = "type_name", nullable = false, length = 255)
-    private String type_name;
+    @Column(nullable = false)
+    private String typeName;
 
-    @Column(name = "data_type", nullable = false, length = 255)
-    private String data_type;
+    @Column(nullable = false)
+    private String dataType;
 
-    public CriteriaType() {
-    }
-
-    public CriteriaType(String type_name, String data_type) {
-        this.type_name = type_name;
-        this.data_type = data_type;
-    }
-
-    public Long getCriteriaTypeId() {
-        return criteria_type_id;
-    }
-
-    public void setCriteriaTypeId(Long criteria_type_id) {
-        this.criteria_type_id = criteria_type_id;
+    // Getters
+    public Integer getCriteriaTypeId() {
+        return criteriaTypeId;
     }
 
     public String getTypeName() {
-        return type_name;
-    }
-
-    public void setTypeName(String type_name) {
-        this.type_name = type_name;
+        return typeName;
     }
 
     public String getDataType() {
-        return data_type;
+        return dataType;
     }
 
-    public void setDataType(String data_type) {
-        this.data_type = data_type;
+    // Setters
+    public void setCriteriaTypeId(Integer criteriaTypeId) {
+        this.criteriaTypeId = criteriaTypeId;
+    }
+
+    public void setTypeName(String typeName) {
+        this.typeName = typeName;
+    }
+
+    public void setDataType(String dataType) {
+        this.dataType = dataType;
     }
 }
