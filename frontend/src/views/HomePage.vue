@@ -1,6 +1,6 @@
 <script setup>
 import { onMounted, ref } from 'vue'
-import { getAllFilters } from '@/services/apiService'
+import { getAllFiltersWithCriteria } from '@/services/apiService'
 import AddFilter from '@/components/filters/AddFilter.vue'
 import FiltersList from '@/components/filters/FiltersList.vue'
 
@@ -9,7 +9,7 @@ const showAddFilter = ref(false)
 
 onMounted(async () => {
   try {
-    filters.value = await getAllFilters()
+    filters.value = await getAllFiltersWithCriteria()
   } catch (error) {
     console.error('Failed to load filters:', error)
   }
