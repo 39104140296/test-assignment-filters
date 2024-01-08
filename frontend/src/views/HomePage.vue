@@ -1,21 +1,30 @@
 <script setup>
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
+import { getAllFilters } from '@/services/apiService'
 import AddFilter from '@/components/filters/AddFilter.vue'
 import FiltersList from '@/components/filters/FiltersList.vue'
 
 const filters = ref([])
 const showAddFilter = ref(false)
 
-const addFilter = (newFilter) => {
-  filters.value.push(newFilter)
-  showAddFilter.value = false
-}
+onMounted(async () => {
+  try {
+    filters.value = await getAllFilters()
+  } catch (error) {
+    console.error('Failed to load filters:', error)
+  }
+})
 
-const deleteFilter = (filterId) => {
-  filters.value = filters.value.filter((f) => f.filterId !== filterId)
-}
+// const addFilter = (newFilter) => {
+//   filters.value.push(newFilter)
+//   showAddFilter.value = false
+// }
 
-const editFilter = (filterId) => {}
+// const deleteFilter = (filterId) => {
+//   filters.value = filters.value.filter((f) => f.filterId !== filterId)
+// }
+
+// const editFilter = (filterId) => {}
 </script>
 
 <template>
