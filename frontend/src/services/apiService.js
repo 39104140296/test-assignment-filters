@@ -1,17 +1,15 @@
+import axios from 'axios'
+
 const API_BASE_URL = 'http://localhost:8080/api'
 
-const handleResponse = async (response) => {
-  if (!response.ok) {
-    const error = await response.text()
-    throw new Error(error)
-  }
-  return response.json()
-}
+const axiosInstance = axios.create({
+  baseURL: API_BASE_URL
+})
 
 export const getAllFilters = async () => {
   try {
-    const response = await fetch(`${API_BASE_URL}/filters`)
-    return await handleResponse(response)
+    const response = await axiosInstance.get('/filters')
+    return response.data
   } catch (error) {
     console.error('Error fetching filters:', error)
     throw error

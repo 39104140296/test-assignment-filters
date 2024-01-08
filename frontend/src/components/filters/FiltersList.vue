@@ -23,7 +23,6 @@ const editFilter = (filterId) => {
       <li v-for="filter in props.filters" :key="filter.filterId">
         <span>{{ filter.filterName }}</span> - <span>{{ filter.amount }}</span> -
         <span>{{ filter.title }}</span> -
-        <span>{{ formatDate(filter.createdAt) }}</span>
         <button @click="editFilter(filter.filterId)">Edit</button>
         <button @click="deleteFilter(filter.filterId)">Delete</button>
       </li>
