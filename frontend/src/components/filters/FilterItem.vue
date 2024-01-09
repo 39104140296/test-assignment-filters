@@ -1,7 +1,6 @@
 <script setup>
 import { defineProps, defineEmits } from 'vue'
-import FilterCriteria from '@/components/FilterCriteria.vue'
-import { format as formatDate } from 'date-fns'
+import FilterCriteria from '@/components/filters/FilterCriteria.vue'
 
 const props = defineProps({
   filter: Object
@@ -16,16 +15,11 @@ const deleteFilter = () => {
 const editFilter = () => {
   emit('edit-filter', props.filter.filterId)
 }
-
-const formatDateForDisplay = (dateString) => {
-  const date = new Date(dateString)
-  return formatDate(date, 'PPP')
-}
 </script>
 
 <template>
   <li>
-    <span>{{ filter.filterName }} (Created at: {{ formatDateForDisplay(filter.createdAt) }})</span>
+    <span>{{ filter.filterName }}</span>
     <ul>
       <FilterCriteria
         v-for="criteria in filter.filterCriteriaList"

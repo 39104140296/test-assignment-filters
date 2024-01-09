@@ -1,7 +1,7 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 import { getAllFiltersWithCriteria } from '@/services/apiService'
-import AddFilter from '@/components/filters/AddFilter.vue'
+// import AddFilter from '@/components/filters/AddFilter.vue'
 import FiltersList from '@/components/filters/FiltersList.vue'
 
 const filters = ref([])
@@ -34,7 +34,7 @@ onMounted(async () => {
     </button>
 
     <div v-if="showAddFilter">
-      <AddFilter @filter-added="addFilter" />
+      <!-- <AddFilter @filter-added="addFilter" /> -->
     </div>
 
     <div v-else>
