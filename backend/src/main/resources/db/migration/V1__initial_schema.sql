@@ -40,5 +40,5 @@ FOREIGN KEY (condition_id) REFERENCES comparison_conditions(condition_id);
 -- Population of test data
 INSERT INTO filters (filter_name, created_at) VALUES ('Budget Filter', '2023-04-01'), ('Sales Filter', '2023-04-02');
 INSERT INTO criteria_types (type_name, data_type) VALUES ('Amount', 'NUMBER'), ('Title', 'STRING'), ('Date', 'DATE');
-INSERT INTO comparison_conditions (criteria_type_id, condition_name) VALUES (1, 'greater than'), (1, 'less than'), (1, 'equal to');
+INSERT INTO comparison_conditions (criteria_type_id, condition_name) VALUES (1, 'More'), (1, 'Less'), (1, 'Equal');
 INSERT INTO filter_criteria (filter_id, criteria_type_id, condition_id, "value") VALUES (1, 1, 1, '1000'), (1, 1, 2, '5000'), (2, 1, 2, '8000');
