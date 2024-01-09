@@ -1,5 +1,4 @@
 <script setup>
-import { defineProps } from 'vue'
 import FilterItem from './FilterItem.vue'
 
 defineProps({

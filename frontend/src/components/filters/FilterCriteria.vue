@@ -2,10 +2,15 @@
 import { ref, computed } from 'vue'
 import { getDaysInMonth } from 'date-fns'
 
-defineProps({
-  criteria: Object
+const props = defineProps({
+  criteria: Object,
+  mode: {
+    type: String,
+    default: 'edit'
+  }
 })
 
+const isNewCriterion = props.mode === 'new'
 const criteriaTypes = ['Amount', 'Title', 'Date']
 const comparisonOptions = {
   Amount: ['More', 'Less', 'Equal'],
@@ -13,32 +18,52 @@ const comparisonOptions = {
   Date: ['From', 'To', 'Equal']
 }
 
-const selectedCriteriaType = ref('Amount')
-const selectedComparisonCondition = ref(comparisonOptions[selectedCriteriaType.value][0])
-const inputValue = ref({
-  day: new Date().getDate(),
-  month: new Date().getMonth() + 1,
-  year: new Date().getFullYear()
+const selectedCriteriaType = ref(isNewCriterion ? 'Amount' : props.criteria.criteriaType.typeName)
+const selectedComparisonCondition = ref(
+  isNewCriterion ? comparisonOptions['Amount'][0] : props.criteria.comparisonCondition.conditionName
+)
+
+const textOrNumberValue = ref(isNewCriterion ? '' : props.criteria.value)
+const dateValue = ref(
+  isNewCriterion
+    ? {
+        day: new Date().getDate(),
+        month: new Date().getMonth() + 1,
+        year: new Date().getFullYear()
+      }
+    : selectedCriteriaType.value === 'Date'
+      ? props.criteria.value
+      : {}
+)
+
+const inputValue = computed({
+  get() {
+    return selectedCriteriaType.value === 'Date' ? dateValue.value : textOrNumberValue.value
+  },
+  set(newValue) {
+    if (selectedCriteriaType.value === 'Date' && typeof newValue === 'object') {
+      dateValue.value = newValue
+    } else {
+      textOrNumberValue.value = newValue
+    }
+  }
 })
 
 const daysInMonth = computed(() => {
-  const days = getDaysInMonth(new Date(inputValue.value.year, inputValue.value.month - 1))
-  return Array.from({ length: days }, (_, i) => i + 1)
-})
-
-const updateDays = () => {
-  const newDaysInMonth = getDaysInMonth(new Date(inputValue.value.year, inputValue.value.month - 1))
-  if (inputValue.value.day > newDaysInMonth) {
-    inputValue.value.day = newDaysInMonth
+  if (selectedCriteriaType.value === 'Date') {
+    const monthIndex = dateValue.value.month - 1
+    const year = dateValue.value.year
+    return Array.from({ length: getDaysInMonth(new Date(year, monthIndex)) }, (_, i) => i + 1)
   }
-}
+  return Array.from({ length: 31 }, (_, i) => i + 1)
+})
 
 const startYear = 2000
 const endYear = new Date().getFullYear()
-const yearRange = []
-for (let year = startYear; year <= endYear; year++) {
-  yearRange.push(year)
-}
+const yearRange = Array.from(
+  { length: endYear - startYear + 1 },
+  (value, index) => startYear + index
+)
 </script>
 
 <template>
