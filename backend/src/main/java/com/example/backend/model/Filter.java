@@ -1,11 +1,9 @@
 package com.example.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-
 import java.util.Date;
 import java.util.List;
-
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Table(name = "filters")
@@ -21,27 +19,40 @@ public class Filter {
     @Column(nullable = false)
     private Date createdAt;
 
-    // @OneToMany(mappedBy = "filter", fetch = FetchType.LAZY, cascade =
-    // CascadeType.ALL)
-    // private List<FilterCriteria> filterCriteriaList;
-
     @OneToMany(mappedBy = "filter", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<FilterCriteria> filterCriteriaList;
 
+    // Getters and setters
     public Integer getFilterId() {
         return filterId;
+    }
+
+    public void setFilterId(Integer filterId) {
+        this.filterId = filterId;
     }
 
     public String getFilterName() {
         return filterName;
     }
 
+    public void setFilterName(String filterName) {
+        this.filterName = filterName;
+    }
+
     public Date getCreatedAt() {
         return createdAt;
     }
 
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
     public List<FilterCriteria> getFilterCriteriaList() {
         return filterCriteriaList;
+    }
+
+    public void setFilterCriteriaList(List<FilterCriteria> filterCriteriaList) {
+        this.filterCriteriaList = filterCriteriaList;
     }
 }

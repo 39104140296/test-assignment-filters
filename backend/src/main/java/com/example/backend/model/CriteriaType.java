@@ -16,26 +16,25 @@ public class CriteriaType {
     @Column(nullable = false)
     private String dataType;
 
-    // Getters
+    // Getters and setters
     public Integer getCriteriaTypeId() {
         return criteriaTypeId;
+    }
+
+    public void setCriteriaTypeId(Integer criteriaTypeId) {
+        this.criteriaTypeId = criteriaTypeId;
     }
 
     public String getTypeName() {
         return typeName;
     }
 
-    public String getDataType() {
-        return dataType;
-    }
-
-    // Setters
-    public void setCriteriaTypeId(Integer criteriaTypeId) {
-        this.criteriaTypeId = criteriaTypeId;
-    }
-
     public void setTypeName(String typeName) {
         this.typeName = typeName;
+    }
+
+    public String getDataType() {
+        return dataType;
     }
 
     public void setDataType(String dataType) {

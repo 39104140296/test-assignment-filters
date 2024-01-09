@@ -1,7 +1,6 @@
 package com.example.backend.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-
 import jakarta.persistence.*;
 
 @Entity
@@ -12,39 +11,60 @@ public class FilterCriteria {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer criteriaId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "filter_id")
     @JsonBackReference
     private Filter filter;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "criteria_type_id")
     private CriteriaType criteriaType;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "condition_id")
     private ComparisonCondition comparisonCondition;
 
     @Column(name = "\"value\"", nullable = false)
     private String value;
 
+    // Getters and setters
     public Integer getCriteriaId() {
         return criteriaId;
+    }
+
+    public void setCriteriaId(Integer criteriaId) {
+        this.criteriaId = criteriaId;
     }
 
     public Filter getFilter() {
         return filter;
     }
 
+    public void setFilter(Filter filter) {
+        this.filter = filter;
+    }
+
     public CriteriaType getCriteriaType() {
         return criteriaType;
+    }
+
+    public void setCriteriaType(CriteriaType criteriaType) {
+        this.criteriaType = criteriaType;
     }
 
     public ComparisonCondition getComparisonCondition() {
         return comparisonCondition;
     }
 
+    public void setComparisonCondition(ComparisonCondition comparisonCondition) {
+        this.comparisonCondition = comparisonCondition;
+    }
+
     public String getValue() {
         return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
     }
 }
