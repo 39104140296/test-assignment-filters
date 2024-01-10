@@ -24,10 +24,9 @@ public class FilterCriteria {
     @JoinColumn(name = "condition_id")
     private ComparisonCondition comparisonCondition;
 
-    @Column(name = "\"value\"", nullable = false)
-    private String value;
+    @Column(name = "criteria_value", nullable = false)
+    private String criteriaValue;
 
-    // Getters and setters
     public Integer getCriteriaId() {
         return criteriaId;
     }
@@ -60,11 +59,11 @@ public class FilterCriteria {
         this.comparisonCondition = comparisonCondition;
     }
 
-    public String getValue() {
-        return value;
+    public String getCriteriaValue() {
+        return criteriaValue;
     }
 
-    public void setValue(String value) {
-        this.value = value;
+    public void setCriteriaValue(String criteriaValue) {
+        this.criteriaValue = criteriaValue;
     }
 }

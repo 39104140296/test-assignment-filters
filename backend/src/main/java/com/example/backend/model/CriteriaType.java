@@ -16,7 +16,6 @@ public class CriteriaType {
     @Column(nullable = false)
     private String dataType;
 
-    // Getters and setters
     public Integer getCriteriaTypeId() {
         return criteriaTypeId;
     }

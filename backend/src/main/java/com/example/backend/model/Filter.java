@@ -17,13 +17,13 @@ public class Filter {
     private String filterName;
 
     @Column(nullable = false)
+    @Temporal(TemporalType.DATE)
     private Date createdAt;
 
-    @OneToMany(mappedBy = "filter", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "filter", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<FilterCriteria> filterCriteriaList;
 
-    // Getters and setters
     public Integer getFilterId() {
         return filterId;
     }

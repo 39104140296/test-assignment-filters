@@ -17,7 +17,6 @@ public class ComparisonCondition {
     @Column(nullable = false)
     private String conditionName;
 
-    // Getters and setters
     public Integer getConditionId() {
         return conditionId;
     }
