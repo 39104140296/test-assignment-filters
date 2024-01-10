@@ -19,10 +19,10 @@ CREATE TABLE comparison_conditions (
 
 CREATE TABLE filter_criteria (
     criteria_id INT AUTO_INCREMENT PRIMARY KEY,
-    filter_id INT NOT NULL,
-    criteria_type_id INT NOT NULL,
-    condition_id INT NOT NULL,
-    "value" VARCHAR(255),
+    filter_id INT,
+    criteria_type_id INT,
+    condition_id INT,
+    criteria_value VARCHAR(255) NOT NULL,
     FOREIGN KEY (filter_id) REFERENCES filters(filter_id),
     FOREIGN KEY (criteria_type_id) REFERENCES criteria_types(criteria_type_id),
     FOREIGN KEY (condition_id) REFERENCES comparison_conditions(condition_id)
@@ -52,7 +52,7 @@ INSERT INTO filters (filter_name, created_at) VALUES
 ('Budget Filter', '2024-01-10'), 
 ('Sales Filter', '2024-01-10');
 
-INSERT INTO filter_criteria (filter_id, criteria_type_id, condition_id, "value") VALUES
+INSERT INTO filter_criteria (filter_id, criteria_type_id, condition_id, criteria_value) VALUES
 
 ((SELECT filter_id FROM filters WHERE filter_name = 'Budget Filter'), 
     (SELECT criteria_type_id FROM criteria_types WHERE type_name = 'Amount'), 
