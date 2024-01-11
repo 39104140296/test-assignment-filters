@@ -114,4 +114,12 @@ public class FilterService {
 
         filterRepository.deleteById(filterId);
     }
+
+    public List<CriteriaType> findAllCriteriaTypes() {
+        return criteriaTypeRepository.findAll();
+    }
+
+    public List<ComparisonCondition> findAllComparisonConditions() {
+        return comparisonConditionRepository.findAll();
+    }
 }

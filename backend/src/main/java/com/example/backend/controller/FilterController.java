@@ -3,6 +3,8 @@ package com.example.backend.controller;
 import com.example.backend.service.FilterService;
 import com.example.backend.dto.CreateFilterDTO;
 import com.example.backend.dto.FilterCriteriaDTO;
+import com.example.backend.model.ComparisonCondition;
+import com.example.backend.model.CriteriaType;
 import com.example.backend.model.Filter;
 import com.example.backend.model.FilterCriteria;
 
@@ -60,5 +62,17 @@ public class FilterController {
     public ResponseEntity<Void> deleteFilter(@PathVariable Integer filterId) {
         filterService.deleteFilterAndCriteria(filterId);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/criteria-types")
+    public ResponseEntity<List<CriteriaType>> findAllCriteriaTypes() {
+        List<CriteriaType> criteriaTypes = filterService.findAllCriteriaTypes();
+        return ResponseEntity.ok(criteriaTypes);
+    }
+
+    @GetMapping("/comparison-conditions")
+    public ResponseEntity<List<ComparisonCondition>> findAllComparisonConditions() {
+        List<ComparisonCondition> comparisonConditions = filterService.findAllComparisonConditions();
+        return ResponseEntity.ok(comparisonConditions);
     }
 }
