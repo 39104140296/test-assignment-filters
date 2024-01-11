@@ -15,6 +15,12 @@ const openModal = async () => {
   filterCriteria.value = await getFilterCriteria(props.filter.filterId)
   showModal.value = true
 }
+
+const getFilteredConditions = (criteriaTypeId) => {
+  return filterStore.comparisonConditions.filter((condition) => {
+    return condition.criteriaType.criteriaTypeId === criteriaTypeId
+  })
+}
 </script>
 
 <template>
@@ -25,13 +31,33 @@ const openModal = async () => {
   <Teleport to="body">
     <div v-if="showModal" class="modal-overlay" @click="showModal = false">
       <div class="modal-content" @click.stop>
-        <h4>Filter Criteria</h4>
+        <h3>{{ filter.filterName }}</h3>
         <ul>
-          <li v-for="criteria in filterCriteria" :key="criteria.criteriaId">
-            {{ criteria.criteriaValue }}
+          <li v-for="criteria in filterCriteria" :key="criteria.criteriaId" class="criteria-row">
+            <select v-model="criteria.criteriaType.criteriaTypeId">
+              <option
+                v-for="type in filterStore.criteriaTypes"
+                :key="type.criteriaTypeId"
+                :value="type.criteriaTypeId"
+              >
+                {{ type.typeName }}
+              </option>
+            </select>
+
+            <select v-model="criteria.comparisonCondition.conditionId">
+              <option
+                v-for="condition in getFilteredConditions(criteria.criteriaType.criteriaTypeId)"
+                :key="condition.conditionId"
+                :value="condition.conditionId"
+              >
+                {{ condition.conditionName }}
+              </option>
+            </select>
+
+            <input v-model="criteria.criteriaValue" placeholder="Enter criteria value" />
           </li>
         </ul>
-        <button @click="showModal = false" class="close-btn">Close</button>
+        <button @click="showModal = false" class="close-btn">CLOSE</button>
       </div>
     </div>
   </Teleport>
@@ -80,9 +106,29 @@ const openModal = async () => {
   position: absolute;
   top: 10px;
   right: 10px;
-  border: none;
+  padding: 2px 6px;
+  border: 1px solid #f5f5f5;
+  border-radius: 6px;
   background: none;
   cursor: pointer;
-  font-size: 24px;
+  font-size: 14px;
+}
+
+.close-btn:hover {
+  background-color: #f5f5f5;
+}
+
+.criteria-row {
+  display: flex;
+  gap: 8px;
+  padding: 8px;
+  align-items: center;
+}
+
+.criteria-row select,
+.criteria-row input {
+  padding: 4px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
 </style>
