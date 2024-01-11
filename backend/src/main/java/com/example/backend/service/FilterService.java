@@ -47,6 +47,15 @@ public class FilterService {
     }
 
     @Transactional
+    public Filter updateFilterName(Integer filterId, String newFilterName) {
+        Filter filter = filterRepository.findById(filterId)
+                .orElseThrow(() -> new EntityNotFoundException("Filter not found with id :: " + filterId));
+
+        filter.setFilterName(newFilterName);
+        return filterRepository.save(filter);
+    }
+
+    @Transactional
     public void updateFilterCriteria(Integer filterId, List<FilterCriteriaDTO> criteriaDTOList) {
         Filter filter = filterRepository.findById(filterId)
                 .orElseThrow(() -> new EntityNotFoundException("Filter not found: " + filterId));

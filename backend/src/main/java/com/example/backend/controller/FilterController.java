@@ -6,6 +6,7 @@ import com.example.backend.model.Filter;
 import com.example.backend.model.FilterCriteria;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,6 +31,14 @@ public class FilterController {
     public ResponseEntity<List<FilterCriteria>> getFilterCriteria(@PathVariable Integer filterId) {
         List<FilterCriteria> filterCriteria = filterService.getFilterCriteriaByFilterId(filterId);
         return ResponseEntity.ok(filterCriteria);
+    }
+
+    @PutMapping("/{filterId}/name")
+    public ResponseEntity<Filter> updateFilterName(@PathVariable Integer filterId,
+            @RequestBody Map<String, String> updateRequest) {
+        String newFilterName = updateRequest.get("filterName");
+        Filter updatedFilter = filterService.updateFilterName(filterId, newFilterName);
+        return ResponseEntity.ok(updatedFilter);
     }
 
     @PutMapping("/{filterId}/criteria")
