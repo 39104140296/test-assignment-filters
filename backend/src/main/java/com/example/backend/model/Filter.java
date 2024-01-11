@@ -1,9 +1,7 @@
 package com.example.backend.model;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.util.Date;
-import java.util.List;
 
 @Entity
 @Table(name = "filters")
@@ -19,10 +17,6 @@ public class Filter {
     @Column(nullable = false)
     @Temporal(TemporalType.DATE)
     private Date createdAt;
-
-    @OneToMany(mappedBy = "filter", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JsonManagedReference
-    private List<FilterCriteria> filterCriteriaList;
 
     public Integer getFilterId() {
         return filterId;
