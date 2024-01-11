@@ -1,6 +1,7 @@
 package com.example.backend.controller;
 
 import com.example.backend.service.FilterService;
+import com.example.backend.dto.FilterCriteriaDTO;
 import com.example.backend.model.Filter;
 import com.example.backend.model.FilterCriteria;
 
@@ -29,5 +30,12 @@ public class FilterController {
     public ResponseEntity<List<FilterCriteria>> getFilterCriteria(@PathVariable Integer filterId) {
         List<FilterCriteria> filterCriteria = filterService.getFilterCriteriaByFilterId(filterId);
         return ResponseEntity.ok(filterCriteria);
+    }
+
+    @PutMapping("/{filterId}/criteria")
+    public ResponseEntity<Void> updateFilterCriteria(@PathVariable Integer filterId,
+            @RequestBody List<FilterCriteriaDTO> criteriaDTOList) {
+        filterService.updateFilterCriteria(filterId, criteriaDTOList);
+        return ResponseEntity.ok().build();
     }
 }
