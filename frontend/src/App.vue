@@ -1,5 +1,5 @@
 <script setup>
-import HomePage from '@/views/HomePage.vue'
+import FiltersList from '@/views/FiltersList.vue'
 </script>
 
 <template>
@@ -8,7 +8,7 @@ import HomePage from '@/views/HomePage.vue'
   </header>
 
   <main>
-    <HomePage />
+    <FiltersList />
   </main>
 </template>
 
