@@ -1,6 +1,7 @@
 package com.example.backend.controller;
 
 import com.example.backend.service.FilterService;
+import com.example.backend.dto.CreateFilterDTO;
 import com.example.backend.dto.FilterCriteriaDTO;
 import com.example.backend.model.Filter;
 import com.example.backend.model.FilterCriteria;
@@ -8,6 +9,7 @@ import com.example.backend.model.FilterCriteria;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -46,5 +48,17 @@ public class FilterController {
             @RequestBody List<FilterCriteriaDTO> criteriaDTOList) {
         filterService.updateFilterCriteria(filterId, criteriaDTOList);
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/")
+    public ResponseEntity<Filter> createFilter(@RequestBody CreateFilterDTO createFilterDTO) {
+        Filter filter = filterService.createFilterAndCriteria(createFilterDTO);
+        return new ResponseEntity<>(filter, HttpStatus.CREATED);
+    }
+
+    @DeleteMapping("/{filterId}")
+    public ResponseEntity<Void> deleteFilter(@PathVariable Integer filterId) {
+        filterService.deleteFilterAndCriteria(filterId);
+        return ResponseEntity.noContent().build();
     }
 }

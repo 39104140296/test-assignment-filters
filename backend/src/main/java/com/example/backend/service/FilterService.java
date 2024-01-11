@@ -8,12 +8,14 @@ import com.example.backend.repository.CriteriaTypeRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 
+import com.example.backend.dto.CreateFilterDTO;
 import com.example.backend.dto.FilterCriteriaDTO;
 import com.example.backend.model.ComparisonCondition;
 import com.example.backend.model.CriteriaType;
 import com.example.backend.model.Filter;
 import com.example.backend.model.FilterCriteria;
 
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -85,5 +87,31 @@ public class FilterService {
         criteria.setComparisonCondition(comparisonCondition);
 
         return criteria;
+    }
+
+    @Transactional
+    public Filter createFilterAndCriteria(CreateFilterDTO createFilterDTO) {
+        Filter newFilter = new Filter();
+        newFilter.setFilterName(createFilterDTO.getFilterName());
+
+        newFilter.setCreatedAt(new Date());
+
+        Filter savedFilter = filterRepository.save(newFilter);
+
+        List<FilterCriteria> filterCriteriaList = createFilterDTO.getCriteria().stream()
+                .map(dto -> mapDtoToEntity(dto, savedFilter))
+                .collect(Collectors.toList());
+
+        filterCriteriaRepository.saveAll(filterCriteriaList);
+
+        return savedFilter;
+    }
+
+    @Transactional
+    public void deleteFilterAndCriteria(Integer filterId) {
+        List<FilterCriteria> criteria = filterCriteriaRepository.findByFilterFilterId(filterId);
+        filterCriteriaRepository.deleteAll(criteria);
+
+        filterRepository.deleteById(filterId);
     }
 }
