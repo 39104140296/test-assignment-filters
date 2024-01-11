@@ -47,12 +47,4 @@ public class Filter {
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
-
-    public List<FilterCriteria> getFilterCriteriaList() {
-        return filterCriteriaList;
-    }
-
-    public void setFilterCriteriaList(List<FilterCriteria> filterCriteriaList) {
-        this.filterCriteriaList = filterCriteriaList;
-    }
 }
