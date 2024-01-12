@@ -2,7 +2,12 @@
 import { ref, computed, watch } from 'vue'
 import { useFilterStore } from '@/stores/filterStore'
 import FilterCriteria from '@/components/filters/FilterCriteria.vue'
-import { updateFilterCriteria, updateFilterName, createFilter } from '@/services/apiService'
+import {
+  updateFilterCriteria,
+  updateFilterName,
+  createFilter,
+  deleteFilter
+} from '@/services/apiService'
 
 const props = defineProps({
   filter: Object,
@@ -94,6 +99,12 @@ const saveFilter = async () => {
   await filterStore.fetchFilters()
   closeModal()
 }
+
+const deleteFilterAndCriteria = async () => {
+  await deleteFilter(props.filter.filterId)
+  await filterStore.fetchFilters()
+  closeModal()
+}
 </script>
 
 <template>
@@ -115,6 +126,7 @@ const saveFilter = async () => {
         </div>
         <button class="add-row-btn" @click="addCriteriaRow">Add Row</button>
         <button class="save-btn" @click="saveFilter">Save</button>
+        <button v-if="!isNew" class="delete-btn" @click="deleteFilterAndCriteria">Delete</button>
         <button class="close-btn" @click="closeModal">Close</button>
       </div>
     </div>
@@ -161,7 +173,8 @@ const saveFilter = async () => {
 }
 
 .add-row-btn,
-.save-btn {
+.save-btn,
+.delete-btn {
   margin: 2px;
   padding: 2px 6px;
   border: 1px solid #f5f5f5;
@@ -184,6 +197,7 @@ const saveFilter = async () => {
 
 .add-row-btn:hover,
 .save-btn:hover,
+.delete-btn:hover,
 .close-btn:hover {
   background-color: #e2e2ff;
 }
