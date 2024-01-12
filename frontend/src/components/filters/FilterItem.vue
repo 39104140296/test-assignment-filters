@@ -9,6 +9,7 @@ const props = defineProps({
 
 const filterStore = useFilterStore()
 const showModal = ref(false)
+const filterName = ref(props.filter.filterName)
 const filterCriteria = ref([])
 const defaultCriteria = computed(() => {
   return filterStore.comparisonConditions[0]
@@ -51,7 +52,7 @@ const deleteCriteriaRow = (criteriaId) => {
   <Teleport to="body">
     <div v-if="showModal" class="modal-overlay" @click.self="showModal = false">
       <div class="modal-content" @click.stop>
-        <h3>{{ filter.filterName }}</h3>
+        <input v-model="filterName" class="filter-name-input" />
         <div v-for="criteria in filterCriteria" :key="criteria.criteriaId">
           <FilterCriteria
             :criteria="criteria"
