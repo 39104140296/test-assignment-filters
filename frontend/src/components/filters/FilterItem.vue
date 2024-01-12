@@ -98,7 +98,7 @@ const saveFilter = async () => {
 
 <template>
   <div class="filter-item" @click="openModal">
-    <h3>{{ props.isNew ? 'Add New Filter' : filter.filterName }}</h3>
+    <h3>{{ props.isNew ? filterName : filter.filterName }}</h3>
   </div>
 
   <Teleport to="body">
