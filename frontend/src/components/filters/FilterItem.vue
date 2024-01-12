@@ -2,6 +2,7 @@
 import { ref, computed } from 'vue'
 import { useFilterStore } from '@/stores/filterStore'
 import FilterCriteria from '@/components/filters/FilterCriteria.vue'
+import { updateFilterCriteria, updateFilterName, getAllFilters } from '@/services/apiService'
 
 const props = defineProps({
   filter: Object
@@ -10,6 +11,7 @@ const props = defineProps({
 const filterStore = useFilterStore()
 const showModal = ref(false)
 const filterName = ref(props.filter.filterName)
+const originalFilterName = props.filter.filterName
 const filterCriteria = ref([])
 const defaultCriteria = computed(() => {
   return filterStore.comparisonConditions[0]
@@ -21,8 +23,11 @@ const openModal = async () => {
   showModal.value = true
 }
 
-const handleCriteriaUpdate = (criteriaId, updatedCriteria) => {
-  filterStore.updateCriteria(criteriaId, updatedCriteria)
+const handleCriteriaUpdate = (updatedCriteria) => {
+  const index = filterCriteria.value.findIndex((c) => c.criteriaId === updatedCriteria.criteriaId)
+  if (index !== -1) {
+    filterCriteria.value[index] = updatedCriteria
+  }
 }
 
 const addCriteriaRow = () => {
@@ -41,6 +46,23 @@ const addCriteriaRow = () => {
 
 const deleteCriteriaRow = (criteriaId) => {
   filterCriteria.value = filterCriteria.value.filter((c) => c.criteriaId !== criteriaId)
+}
+
+const saveFilter = async () => {
+  const criteriaDTOList = filterCriteria.value.map((criteria) => ({
+    criteriaTypeId: criteria.criteriaType.criteriaTypeId,
+    conditionId: criteria.comparisonCondition.conditionId,
+    criteriaValue: criteria.criteriaValue
+  }))
+
+  await updateFilterCriteria(props.filter.filterId, criteriaDTOList)
+
+  if (filterName.value !== originalFilterName) {
+    await updateFilterName(props.filter.filterId, filterName.value)
+  }
+
+  await getAllFilters()
+  showModal.value = false
 }
 </script>
 
@@ -61,7 +83,8 @@ const deleteCriteriaRow = (criteriaId) => {
             @delete:criteria="deleteCriteriaRow"
           />
         </div>
-        <button @click="addCriteriaRow">Add Row</button>
+        <button class="add-row-btn" @click="addCriteriaRow">ADD ROW</button>
+        <button class="save-btn" @click="saveFilter">SAVE</button>
         <button class="close-btn" @click="showModal = false">Close</button>
       </div>
     </div>
@@ -102,11 +125,21 @@ const deleteCriteriaRow = (criteriaId) => {
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   width: 90%;
-  max-width: 450px;
+  width: 600px;
   z-index: 1001;
   position: relative;
 }
 
+.add-row-btn,
+.save-btn {
+  margin: 2px;
+  padding: 2px 6px;
+  border: 1px solid #f5f5f5;
+  background-color: #f5f5f5;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
 .close-btn {
   position: absolute;
   top: 10px;
@@ -119,6 +152,8 @@ const deleteCriteriaRow = (criteriaId) => {
   font-size: 14px;
 }
 
+.add-row-btn:hover,
+.save-btn:hover,
 .close-btn:hover {
   background-color: #e2e2ff;
 }
