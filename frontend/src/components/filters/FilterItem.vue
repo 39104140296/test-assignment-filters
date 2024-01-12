@@ -37,6 +37,10 @@ const addCriteriaRow = () => {
   }
   filterCriteria.value.push(newCriteria)
 }
+
+const deleteCriteriaRow = (criteriaId) => {
+  filterCriteria.value = filterCriteria.value.filter((c) => c.criteriaId !== criteriaId)
+}
 </script>
 
 <template>
@@ -49,7 +53,12 @@ const addCriteriaRow = () => {
       <div class="modal-content" @click.stop>
         <h3>{{ filter.filterName }}</h3>
         <div v-for="criteria in filterCriteria" :key="criteria.criteriaId">
-          <FilterCriteria :criteria="criteria" @update:criteria="handleCriteriaUpdate" />
+          <FilterCriteria
+            :criteria="criteria"
+            :showDeleteButton="filterCriteria.length > 1"
+            @update:criteria="handleCriteriaUpdate"
+            @delete:criteria="deleteCriteriaRow"
+          />
         </div>
         <button @click="addCriteriaRow">Add Row</button>
         <button class="close-btn" @click="showModal = false">Close</button>
