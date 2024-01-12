@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed, watch, onMounted } from 'vue'
 import { useFilterStore } from '@/stores/filterStore'
+import { format, getDaysInMonth, parseISO } from 'date-fns'
 
 const props = defineProps({
   criteria: Object,
@@ -14,12 +15,44 @@ const filterStore = useFilterStore()
 const localCriteria = ref({ ...props.criteria })
 const isInitialLoad = ref(true)
 
-const criteriaTypes = computed(() => filterStore.criteriaTypes)
+const dateTypeId = computed(() => {
+  const dateType = filterStore.criteriaTypes.find((type) => type.typeName === 'Date')
+  return dateType ? dateType.criteriaTypeId : null
+})
 
-const filteredConditions = computed(() => {
-  return filterStore.comparisonConditions.filter((condition) => {
-    return condition.criteriaType.criteriaTypeId === localCriteria.value.criteriaType.criteriaTypeId
-  })
+const isDateType = computed(
+  () => localCriteria.value.criteriaType.criteriaTypeId === dateTypeId.value
+)
+
+const initialDate =
+  isDateType.value && localCriteria.value.criteriaValue
+    ? parseISO(localCriteria.value.criteriaValue)
+    : new Date()
+
+const selectedDay = ref(initialDate.getDate())
+const selectedMonth = ref(initialDate.getMonth() + 1)
+const selectedYear = ref(initialDate.getFullYear())
+
+const days = computed(() =>
+  Array.from(
+    { length: getDaysInMonth(new Date(selectedYear.value, selectedMonth.value - 1)) },
+    (_, i) => i + 1
+  )
+)
+const months = computed(() => Array.from({ length: 12 }, (_, i) => format(new Date(0, i), 'MMM')))
+const years = computed(() => {
+  let currentYear = new Date().getFullYear()
+  return Array.from({ length: 20 }, (_, i) => currentYear - i)
+})
+
+watch([selectedDay, selectedMonth, selectedYear], () => {
+  if (isDateType.value) {
+    const formattedDate = format(
+      new Date(selectedYear.value, selectedMonth.value - 1, selectedDay.value),
+      'yyyy-MM-dd'
+    )
+    localCriteria.value.criteriaValue = formattedDate
+  }
 })
 
 const onCriteriaTypeChange = () => {
@@ -33,6 +66,10 @@ const onCriteriaTypeChange = () => {
     localCriteria.value.criteriaValue = ''
   }
 
+  if (isDateType.value) {
+    localCriteria.value.criteriaValue = format(new Date(), 'yyyy-MM-dd')
+  }
+
   emit('update:criteria', { ...localCriteria.value })
 }
 
@@ -42,6 +79,12 @@ const removeCriteria = () => {
 
 onMounted(() => {
   isInitialLoad.value = false
+})
+
+const filteredConditions = computed(() => {
+  return filterStore.comparisonConditions.filter((condition) => {
+    return condition.criteriaType.criteriaTypeId === localCriteria.value.criteriaType.criteriaTypeId
+  })
 })
 
 watch(
@@ -56,7 +99,11 @@ watch(
 <template>
   <div class="criteria-row">
     <select v-model="localCriteria.criteriaType.criteriaTypeId" @change="onCriteriaTypeChange">
-      <option v-for="type in criteriaTypes" :key="type.criteriaTypeId" :value="type.criteriaTypeId">
+      <option
+        v-for="type in filterStore.criteriaTypes"
+        :key="type.criteriaTypeId"
+        :value="type.criteriaTypeId"
+      >
         {{ type.typeName }}
       </option>
     </select>
@@ -71,8 +118,22 @@ watch(
       </option>
     </select>
 
-    <input v-model="localCriteria.criteriaValue" />
-    <button class="delete-btn" v-if="showDeleteButton" @click="removeCriteria">DELETE</button>
+    <div v-if="isDateType">
+      <select v-model="selectedDay">
+        <option v-for="day in days" :key="day" :value="day">{{ day }}</option>
+      </select>
+      <select v-model="selectedMonth">
+        <option v-for="(month, index) in months" :key="index" :value="index + 1">
+          {{ month }}
+        </option>
+      </select>
+      <select v-model="selectedYear">
+        <option v-for="year in years" :key="year" :value="year">{{ year }}</option>
+      </select>
+    </div>
+
+    <input v-else v-model="localCriteria.criteriaValue" />
+    <button class="delete-btn" v-if="showDeleteButton" @click="removeCriteria">Delete</button>
   </div>
 </template>
 
