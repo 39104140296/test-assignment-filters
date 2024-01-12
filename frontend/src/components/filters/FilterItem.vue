@@ -1,8 +1,8 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useFilterStore } from '@/stores/filterStore'
 import FilterCriteria from '@/components/filters/FilterCriteria.vue'
-import { updateFilterCriteria, updateFilterName, getAllFilters } from '@/services/apiService'
+import { updateFilterCriteria, updateFilterName } from '@/services/apiService'
 
 const props = defineProps({
   filter: Object
@@ -11,16 +11,30 @@ const props = defineProps({
 const filterStore = useFilterStore()
 const showModal = ref(false)
 const filterName = ref(props.filter.filterName)
-const originalFilterName = props.filter.filterName
+let originalFilterName = props.filter.filterName
 const filterCriteria = ref([])
 const defaultCriteria = computed(() => {
   return filterStore.comparisonConditions[0]
 })
 
+watch(
+  () => props.filter.filterName,
+  (newName) => {
+    filterName.value = newName
+    originalFilterName = newName
+  }
+)
+
 const openModal = async () => {
+  filterName.value = props.filter.filterName
+  originalFilterName = props.filter.filterName
   await filterStore.fetchFilterCriteria(props.filter.filterId)
   filterCriteria.value = [...filterStore.filterCriteria]
   showModal.value = true
+}
+
+const closeModal = async () => {
+  showModal.value = false
 }
 
 const handleCriteriaUpdate = (updatedCriteria) => {
@@ -61,8 +75,8 @@ const saveFilter = async () => {
     await updateFilterName(props.filter.filterId, filterName.value)
   }
 
-  await getAllFilters()
-  showModal.value = false
+  await filterStore.fetchFilters()
+  closeModal()
 }
 </script>
 
@@ -72,7 +86,7 @@ const saveFilter = async () => {
   </div>
 
   <Teleport to="body">
-    <div v-if="showModal" class="modal-overlay" @click.self="showModal = false">
+    <div v-if="showModal" class="modal-overlay" @click.self="closeModal">
       <div class="modal-content" @click.stop>
         <input v-model="filterName" class="filter-name-input" />
         <div v-for="criteria in filterCriteria" :key="criteria.criteriaId">
@@ -85,7 +99,7 @@ const saveFilter = async () => {
         </div>
         <button class="add-row-btn" @click="addCriteriaRow">ADD ROW</button>
         <button class="save-btn" @click="saveFilter">SAVE</button>
-        <button class="close-btn" @click="showModal = false">Close</button>
+        <button class="close-btn" @click="closeModal">Close</button>
       </div>
     </div>
   </Teleport>

@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import {
+  getAllFilters,
   findAllCriteriaTypes,
   findAllComparisonConditions,
   getFilterCriteria
@@ -7,11 +8,15 @@ import {
 
 export const useFilterStore = defineStore('filter', {
   state: () => ({
+    filters: [],
     criteriaTypes: null,
     comparisonConditions: null,
     filterCriteria: []
   }),
   actions: {
+    async fetchFilters() {
+      this.filters = await getAllFilters()
+    },
     async fetchCriteriaTypes() {
       this.criteriaTypes = await findAllCriteriaTypes()
     },

@@ -1,16 +1,12 @@
 <script setup>
-import { onMounted, ref } from 'vue'
-import { getAllFilters } from '@/services/apiService'
+import { onMounted } from 'vue'
 import { useFilterStore } from '@/stores/filterStore'
 import FilterItem from '@/components/filters/FilterItem.vue'
 
 const filterStore = useFilterStore()
-const filters = ref([])
 
 const fetchFilters = async () => {
-  const filterData = await getAllFilters()
-  filters.value = filterData
-
+  await filterStore.fetchFilters()
   await filterStore.fetchCriteriaTypes()
   await filterStore.fetchComparisonConditions()
 }
@@ -21,6 +17,6 @@ onMounted(fetchFilters)
 <template>
   <div>
     <h1>Filters</h1>
-    <FilterItem v-for="filter in filters" :key="filter.filterId" :filter="filter" />
+    <FilterItem v-for="filter in filterStore.filters" :key="filter.filterId" :filter="filter" />
   </div>
 </template>
