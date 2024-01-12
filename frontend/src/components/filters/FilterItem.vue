@@ -2,39 +2,62 @@
 import { ref, computed, watch } from 'vue'
 import { useFilterStore } from '@/stores/filterStore'
 import FilterCriteria from '@/components/filters/FilterCriteria.vue'
-import { updateFilterCriteria, updateFilterName } from '@/services/apiService'
+import { updateFilterCriteria, updateFilterName, createFilter } from '@/services/apiService'
 
 const props = defineProps({
-  filter: Object
+  filter: Object,
+  isNew: Boolean
 })
 
 const filterStore = useFilterStore()
 const showModal = ref(false)
-const filterName = ref(props.filter.filterName)
-let originalFilterName = props.filter.filterName
+
+const filterName = ref(props.isNew ? 'New Filter' : props.filter?.filterName || '')
+const originalFilterName = ref(props.isNew ? '' : props.filter?.filterName || '')
+
 const filterCriteria = ref([])
-const defaultCriteria = computed(() => {
-  return filterStore.comparisonConditions[0]
-})
+const defaultCriteria = computed(() => filterStore.comparisonConditions[0])
+
+const emit = defineEmits(['close'])
+
+const addCriteriaRow = () => {
+  const newCriteria = {
+    criteriaId: Date.now(),
+    criteriaType: defaultCriteria.value.criteriaType,
+    comparisonCondition: defaultCriteria.value,
+    criteriaValue: ''
+  }
+  filterCriteria.value.push(newCriteria)
+}
+
+if (props.isNew) {
+  showModal.value = true
+  addCriteriaRow()
+}
 
 watch(
-  () => props.filter.filterName,
+  () => props.filter?.filterName,
   (newName) => {
-    filterName.value = newName
-    originalFilterName = newName
+    if (!props.isNew) {
+      filterName.value = newName
+      originalFilterName.value = newName
+    }
   }
 )
 
 const openModal = async () => {
-  filterName.value = props.filter.filterName
-  originalFilterName = props.filter.filterName
-  await filterStore.fetchFilterCriteria(props.filter.filterId)
-  filterCriteria.value = [...filterStore.filterCriteria]
+  if (!props.isNew && props.filter) {
+    filterName.value = props.filter.filterName
+    originalFilterName.value = props.filter.filterName
+    await filterStore.fetchFilterCriteria(props.filter.filterId)
+    filterCriteria.value = [...filterStore.filterCriteria]
+  }
   showModal.value = true
 }
 
-const closeModal = async () => {
+const closeModal = () => {
   showModal.value = false
+  emit('close')
 }
 
 const handleCriteriaUpdate = (updatedCriteria) => {
@@ -42,20 +65,6 @@ const handleCriteriaUpdate = (updatedCriteria) => {
   if (index !== -1) {
     filterCriteria.value[index] = updatedCriteria
   }
-}
-
-const addCriteriaRow = () => {
-  const newCriteria = {
-    criteriaId: Date.now(),
-    criteriaType: {
-      criteriaTypeId: defaultCriteria.value.criteriaType.criteriaTypeId,
-      typeName: defaultCriteria.value.criteriaType.dataType,
-      dataType: defaultCriteria.value.criteriaType.typeName
-    },
-    comparisonCondition: defaultCriteria,
-    criteriaValue: ''
-  }
-  filterCriteria.value.push(newCriteria)
 }
 
 const deleteCriteriaRow = (criteriaId) => {
@@ -69,10 +78,17 @@ const saveFilter = async () => {
     criteriaValue: criteria.criteriaValue
   }))
 
-  await updateFilterCriteria(props.filter.filterId, criteriaDTOList)
-
-  if (filterName.value !== originalFilterName) {
-    await updateFilterName(props.filter.filterId, filterName.value)
+  if (props.isNew) {
+    const createFilterDTO = {
+      filterName: filterName.value,
+      criteria: criteriaDTOList
+    }
+    await createFilter(createFilterDTO)
+  } else {
+    await updateFilterCriteria(props.filter.filterId, criteriaDTOList)
+    if (filterName.value !== originalFilterName.value) {
+      await updateFilterName(props.filter.filterId, filterName.value)
+    }
   }
 
   await filterStore.fetchFilters()
@@ -82,7 +98,7 @@ const saveFilter = async () => {
 
 <template>
   <div class="filter-item" @click="openModal">
-    <h3>{{ filter.filterName }}</h3>
+    <h3>{{ props.isNew ? 'Add New Filter' : filter.filterName }}</h3>
   </div>
 
   <Teleport to="body">
@@ -97,8 +113,8 @@ const saveFilter = async () => {
             @delete:criteria="deleteCriteriaRow"
           />
         </div>
-        <button class="add-row-btn" @click="addCriteriaRow">ADD ROW</button>
-        <button class="save-btn" @click="saveFilter">SAVE</button>
+        <button class="add-row-btn" @click="addCriteriaRow">Add Row</button>
+        <button class="save-btn" @click="saveFilter">Save</button>
         <button class="close-btn" @click="closeModal">Close</button>
       </div>
     </div>
