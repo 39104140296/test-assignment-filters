@@ -1,13 +1,18 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 import { getAllFilters } from '@/services/apiService'
+import { useFilterStore } from '@/stores/filterStore'
 import FilterItem from '@/components/filters/FilterItem.vue'
 
+const filterStore = useFilterStore()
 const filters = ref([])
 
 const fetchFilters = async () => {
-  const data = await getAllFilters()
-  data ? (filters.value = data) : console.log('Filters cannot be retrieved')
+  const filterData = await getAllFilters()
+  filters.value = filterData
+
+  await filterStore.fetchCriteriaTypes()
+  await filterStore.fetchComparisonConditions()
 }
 
 onMounted(fetchFilters)

@@ -1,25 +1,41 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useFilterStore } from '@/stores/filterStore'
-import { getFilterCriteria } from '@/services/apiService'
+import FilterCriteria from '@/components/filters/FilterCriteria.vue'
+
+const props = defineProps({
+  filter: Object
+})
 
 const filterStore = useFilterStore()
-
-const props = defineProps({ filter: Object })
 const showModal = ref(false)
 const filterCriteria = ref([])
+const defaultCriteria = computed(() => {
+  return filterStore.comparisonConditions[0]
+})
 
 const openModal = async () => {
-  await filterStore.fetchCriteriaTypes()
-  await filterStore.fetchComparisonConditions()
-  filterCriteria.value = await getFilterCriteria(props.filter.filterId)
+  await filterStore.fetchFilterCriteria(props.filter.filterId)
+  filterCriteria.value = [...filterStore.filterCriteria]
   showModal.value = true
 }
 
-const getFilteredConditions = (criteriaTypeId) => {
-  return filterStore.comparisonConditions.filter((condition) => {
-    return condition.criteriaType.criteriaTypeId === criteriaTypeId
-  })
+const handleCriteriaUpdate = (criteriaId, updatedCriteria) => {
+  filterStore.updateCriteria(criteriaId, updatedCriteria)
+}
+
+const addCriteriaRow = () => {
+  const newCriteria = {
+    criteriaId: Date.now(),
+    criteriaType: {
+      criteriaTypeId: defaultCriteria.value.criteriaType.criteriaTypeId,
+      typeName: defaultCriteria.value.criteriaType.dataType,
+      dataType: defaultCriteria.value.criteriaType.typeName
+    },
+    comparisonCondition: defaultCriteria,
+    criteriaValue: ''
+  }
+  filterCriteria.value.push(newCriteria)
 }
 </script>
 
@@ -29,35 +45,14 @@ const getFilteredConditions = (criteriaTypeId) => {
   </div>
 
   <Teleport to="body">
-    <div v-if="showModal" class="modal-overlay" @click="showModal = false">
+    <div v-if="showModal" class="modal-overlay" @click.self="showModal = false">
       <div class="modal-content" @click.stop>
         <h3>{{ filter.filterName }}</h3>
-        <ul>
-          <li v-for="criteria in filterCriteria" :key="criteria.criteriaId" class="criteria-row">
-            <select v-model="criteria.criteriaType.criteriaTypeId">
-              <option
-                v-for="type in filterStore.criteriaTypes"
-                :key="type.criteriaTypeId"
-                :value="type.criteriaTypeId"
-              >
-                {{ type.typeName }}
-              </option>
-            </select>
-
-            <select v-model="criteria.comparisonCondition.conditionId">
-              <option
-                v-for="condition in getFilteredConditions(criteria.criteriaType.criteriaTypeId)"
-                :key="condition.conditionId"
-                :value="condition.conditionId"
-              >
-                {{ condition.conditionName }}
-              </option>
-            </select>
-
-            <input v-model="criteria.criteriaValue" placeholder="Enter criteria value" />
-          </li>
-        </ul>
-        <button @click="showModal = false" class="close-btn">CLOSE</button>
+        <div v-for="criteria in filterCriteria" :key="criteria.criteriaId">
+          <FilterCriteria :criteria="criteria" @update:criteria="handleCriteriaUpdate" />
+        </div>
+        <button @click="addCriteriaRow">Add Row</button>
+        <button class="close-btn" @click="showModal = false">Close</button>
       </div>
     </div>
   </Teleport>
@@ -108,27 +103,13 @@ const getFilteredConditions = (criteriaTypeId) => {
   right: 10px;
   padding: 2px 6px;
   border: 1px solid #f5f5f5;
+  background-color: #f5f5f5;
   border-radius: 6px;
-  background: none;
   cursor: pointer;
   font-size: 14px;
 }
 
 .close-btn:hover {
-  background-color: #f5f5f5;
-}
-
-.criteria-row {
-  display: flex;
-  gap: 8px;
-  padding: 8px;
-  align-items: center;
-}
-
-.criteria-row select,
-.criteria-row input {
-  padding: 4px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  background-color: #e2e2ff;
 }
 </style>
