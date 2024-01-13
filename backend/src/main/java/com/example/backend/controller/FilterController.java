@@ -29,24 +29,34 @@ public class FilterController {
         return ResponseEntity.ok(filters);
     }
 
+    // @GetMapping("/{filterId}")
+    // public ResponseEntity<List<FilterCriteriaDTO>>
+    // getFilterCriteria(@PathVariable Integer filterId) {
+    // List<FilterCriteriaDTO> filterCriteriaDTOs =
+    // filterService.getFilterCriteria(filterId);
+    // return ResponseEntity.ok(filterCriteriaDTOs);
+    // }
+
     @GetMapping("/{filterId}")
     public ResponseEntity<List<FilterCriteriaDTO>> getFilterCriteria(@PathVariable Integer filterId) {
         List<FilterCriteriaDTO> filterCriteriaDTOs = filterService.getFilterCriteria(filterId);
         return ResponseEntity.ok(filterCriteriaDTOs);
     }
 
-    @PutMapping("/{filterId}")
-    public ResponseEntity<FilterDTO> updateFilter(@PathVariable Integer filterId,
-            @RequestBody UpdateFilterAndCriteriaRequest updateRequest) {
-        FilterDTO updatedFilter = filterService.updateFilterAndCriteria(filterId, updateRequest);
-        return ResponseEntity.ok(updatedFilter);
-    }
+    // @PutMapping("/{filterId}")
+    // public ResponseEntity<FilterDTO> updateFilter(@PathVariable Integer filterId,
+    // @RequestBody UpdateFilterAndCriteriaRequest updateRequest) {
+    // FilterDTO updatedFilter = filterService.updateFilterAndCriteria(filterId,
+    // updateRequest);
+    // return ResponseEntity.ok(updatedFilter);
+    // }
 
-    @PostMapping
-    public ResponseEntity<FilterDTO> createFilter(@RequestBody CreateFilterRequest createFilterRequest) {
-        FilterDTO filterDTO = filterService.createFilter(createFilterRequest);
-        return new ResponseEntity<>(filterDTO, HttpStatus.CREATED);
-    }
+    // @PostMapping
+    // public ResponseEntity<FilterDTO> createFilter(@RequestBody
+    // CreateFilterRequest createFilterRequest) {
+    // FilterDTO filterDTO = filterService.createFilter(createFilterRequest);
+    // return new ResponseEntity<>(filterDTO, HttpStatus.CREATED);
+    // }
 
     @DeleteMapping("/{filterId}")
     public ResponseEntity<Void> deleteFilter(@PathVariable Integer filterId) {

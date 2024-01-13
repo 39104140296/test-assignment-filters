@@ -4,8 +4,8 @@ public class FilterCriteriaDTO {
 
     private Integer criteriaId;
     private Integer filterId;
-    private Integer criteriaTypeId;
-    private Integer conditionId;
+    private CriteriaTypeDTO criteriaType;
+    private ComparisonConditionDTO comparisonCondition;
     private String criteriaValue;
 
     public Integer getCriteriaId() {
@@ -26,21 +26,21 @@ public class FilterCriteriaDTO {
         return this;
     }
 
-    public Integer getCriteriaTypeId() {
-        return criteriaTypeId;
+    public CriteriaTypeDTO getCriteriaType() {
+        return criteriaType;
     }
 
-    public FilterCriteriaDTO setCriteriaTypeId(Integer criteriaTypeId) {
-        this.criteriaTypeId = criteriaTypeId;
+    public FilterCriteriaDTO setCriteriaType(CriteriaTypeDTO criteriaType) {
+        this.criteriaType = criteriaType;
         return this;
     }
 
-    public Integer getConditionId() {
-        return conditionId;
+    public ComparisonConditionDTO getComparisonCondition() {
+        return comparisonCondition;
     }
 
-    public FilterCriteriaDTO setConditionId(Integer conditionId) {
-        this.conditionId = conditionId;
+    public FilterCriteriaDTO setComparisonCondition(ComparisonConditionDTO comparisonCondition) {
+        this.comparisonCondition = comparisonCondition;
         return this;
     }
 
