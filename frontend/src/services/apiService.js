@@ -6,7 +6,7 @@ const axiosInstance = axios.create({
 
 export const getAllFilters = async () => {
   try {
-    const response = await axiosInstance.get('/')
+    const response = await axiosInstance.get()
     return response.data
   } catch (error) {
     console.error('Error getting all filters: ', error)
@@ -16,7 +16,7 @@ export const getAllFilters = async () => {
 
 export const getFilterCriteria = async (filterId) => {
   try {
-    const response = await axiosInstance.get(`/${filterId}/criteria`)
+    const response = await axiosInstance.get(`/${filterId}`)
     return response.data
   } catch (error) {
     console.error(`Error getting criteria for filter ${filterId}: `, error)
@@ -24,29 +24,19 @@ export const getFilterCriteria = async (filterId) => {
   }
 }
 
-export const updateFilterName = async (filterId, newFilterName) => {
+export const updateFilter = async (filterId, filterName, filterCriteria) => {
   try {
-    const response = await axiosInstance.put(`/${filterId}/name`, { filterName: newFilterName })
+    const response = await axiosInstance.put(`/${filterId}`, { filterName, filterCriteria })
     return response.data
   } catch (error) {
-    console.error('Error updating filter name: ', error)
+    console.error('Error updating filter: ', error)
     throw error
   }
 }
 
-export const updateFilterCriteria = async (filterId, criteriaDTOList) => {
+export const createFilter = async (newFilterData) => {
   try {
-    const response = await axiosInstance.put(`/${filterId}/criteria`, criteriaDTOList)
-    return response.data
-  } catch (error) {
-    console.error('Error updating filter criteria: ', error)
-    throw error
-  }
-}
-
-export const createFilter = async (createFilterDTO) => {
-  try {
-    const response = await axiosInstance.post('/', createFilterDTO)
+    const response = await axiosInstance.post('', newFilterData)
     return response.data
   } catch (error) {
     console.error('Error creating new filter: ', error)
@@ -64,22 +54,12 @@ export const deleteFilter = async (filterId) => {
   }
 }
 
-export const findAllCriteriaTypes = async () => {
+export const getFilterOptions = async () => {
   try {
-    const response = await axiosInstance.get('/criteria-types')
+    const response = await axiosInstance.get('/filter-options')
     return response.data
   } catch (error) {
-    console.error('Error fetching criteria types: ', error)
-    throw error
-  }
-}
-
-export const findAllComparisonConditions = async () => {
-  try {
-    const response = await axiosInstance.get('/comparison-conditions')
-    return response.data
-  } catch (error) {
-    console.error('Error fetching comparison conditions: ', error)
+    console.error('Error fetching filter options: ', error)
     throw error
   }
 }
