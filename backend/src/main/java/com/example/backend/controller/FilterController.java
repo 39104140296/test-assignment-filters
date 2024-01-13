@@ -2,16 +2,16 @@ package com.example.backend.controller;
 
 import com.example.backend.service.FilterService;
 import com.example.backend.dto.FilterDTO;
-// import com.example.backend.dto.FilterCriteriaDTO;
+import com.example.backend.dto.FilterCriteriaDTO;
 import com.example.backend.dto.ComparisonConditionDTO;
-import com.example.backend.dto.CreateFilterDTO;
+// import com.example.backend.dto.CreateFilterDTO;
 import com.example.backend.dto.CriteriaTypeDTO;
 import com.example.backend.model.Filter;
 
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.http.HttpStatus;
+// import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,13 +31,11 @@ public class FilterController {
         return ResponseEntity.ok(filters);
     }
 
-    // @GetMapping("/{filterId}")
-    // public ResponseEntity<List<FilterCriteriaDTO>>
-    // getFilterCriteria(@PathVariable Integer filterId) {
-    // List<FilterCriteriaDTO> filterCriteriaDTOs =
-    // filterService.getFilterCriteria(filterId);
-    // return ResponseEntity.ok(filterCriteriaDTOs);
-    // }
+    @GetMapping("/{filterId}")
+    public ResponseEntity<List<FilterCriteriaDTO>> getFilterCriteria(@PathVariable Integer filterId) {
+        List<FilterCriteriaDTO> filterCriteriaDTOs = filterService.getFilterCriteria(filterId);
+        return ResponseEntity.ok(filterCriteriaDTOs);
+    }
 
     @PutMapping("/{filterId}/name")
     public ResponseEntity<Filter> updateFilterName(@PathVariable Integer filterId,
@@ -55,11 +53,12 @@ public class FilterController {
     // return ResponseEntity.ok().build();
     // }
 
-    @PostMapping("/")
-    public ResponseEntity<Filter> createFilter(@RequestBody CreateFilterDTO createFilterDTO) {
-        Filter filter = filterService.createFilterAndCriteria(createFilterDTO);
-        return new ResponseEntity<>(filter, HttpStatus.CREATED);
-    }
+    // @PostMapping("/")
+    // public ResponseEntity<Filter> createFilter(@RequestBody CreateFilterDTO
+    // createFilterDTO) {
+    // Filter filter = filterService.createFilterAndCriteria(createFilterDTO);
+    // return new ResponseEntity<>(filter, HttpStatus.CREATED);
+    // }
 
     // @DeleteMapping("/{filterId}")
     // public ResponseEntity<Void> deleteFilter(@PathVariable Integer filterId) {

@@ -4,7 +4,6 @@ public class CriteriaTypeDTO {
 
     private Integer criteriaTypeId;
     private String typeName;
-    // private String dataType;
 
     public Integer getCriteriaTypeId() {
         return criteriaTypeId;
@@ -23,13 +22,4 @@ public class CriteriaTypeDTO {
         this.typeName = typeName;
         return this;
     }
-
-    // public String getDataType() {
-    // return dataType;
-    // }
-
-    // public CriteriaTypeDTO setDataType(String dataType) {
-    // this.dataType = dataType;
-    // return this;
-    // }
 }
