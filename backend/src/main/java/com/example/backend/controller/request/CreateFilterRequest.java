@@ -1,8 +1,9 @@
-package com.example.backend.dto;
+package com.example.backend.controller.request;
 
+import com.example.backend.dto.FilterCriteriaDTO;
 import java.util.List;
 
-public class CreateFilterDTO {
+public class CreateFilterRequest {
     private String filterName;
     private List<FilterCriteriaDTO> criteria;
 
