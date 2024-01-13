@@ -1,12 +1,12 @@
 package com.example.backend.controller;
 
 import com.example.backend.service.FilterService;
+import com.example.backend.dto.FilterDTO;
+// import com.example.backend.dto.FilterCriteriaDTO;
+import com.example.backend.dto.ComparisonConditionDTO;
 import com.example.backend.dto.CreateFilterDTO;
-import com.example.backend.dto.FilterCriteriaDTO;
-import com.example.backend.model.ComparisonCondition;
-import com.example.backend.model.CriteriaType;
+import com.example.backend.dto.CriteriaTypeDTO;
 import com.example.backend.model.Filter;
-import com.example.backend.model.FilterCriteria;
 
 import java.util.List;
 import java.util.Map;
@@ -25,17 +25,19 @@ public class FilterController {
         this.filterService = filterService;
     }
 
-    @GetMapping("/")
-    public ResponseEntity<List<Filter>> getAllFilters() {
-        List<Filter> filters = filterService.getAllFilters();
+    @GetMapping
+    public ResponseEntity<List<FilterDTO>> getAllFilters() {
+        List<FilterDTO> filters = filterService.getAllFilters();
         return ResponseEntity.ok(filters);
     }
 
-    @GetMapping("/{filterId}/criteria")
-    public ResponseEntity<List<FilterCriteria>> getFilterCriteria(@PathVariable Integer filterId) {
-        List<FilterCriteria> filterCriteria = filterService.getFilterCriteriaByFilterId(filterId);
-        return ResponseEntity.ok(filterCriteria);
-    }
+    // @GetMapping("/{filterId}")
+    // public ResponseEntity<List<FilterCriteriaDTO>>
+    // getFilterCriteria(@PathVariable Integer filterId) {
+    // List<FilterCriteriaDTO> filterCriteriaDTOs =
+    // filterService.getFilterCriteria(filterId);
+    // return ResponseEntity.ok(filterCriteriaDTOs);
+    // }
 
     @PutMapping("/{filterId}/name")
     public ResponseEntity<Filter> updateFilterName(@PathVariable Integer filterId,
@@ -45,12 +47,13 @@ public class FilterController {
         return ResponseEntity.ok(updatedFilter);
     }
 
-    @PutMapping("/{filterId}/criteria")
-    public ResponseEntity<Void> updateFilterCriteria(@PathVariable Integer filterId,
-            @RequestBody List<FilterCriteriaDTO> criteriaDTOList) {
-        filterService.updateFilterCriteria(filterId, criteriaDTOList);
-        return ResponseEntity.ok().build();
-    }
+    // @PutMapping("/{filterId}/criteria")
+    // public ResponseEntity<Void> updateFilterCriteria(@PathVariable Integer
+    // filterId,
+    // @RequestBody List<FilterCriteriaDTO> criteriaDTOList) {
+    // filterService.updateFilterCriteria(filterId, criteriaDTOList);
+    // return ResponseEntity.ok().build();
+    // }
 
     @PostMapping("/")
     public ResponseEntity<Filter> createFilter(@RequestBody CreateFilterDTO createFilterDTO) {
@@ -58,21 +61,21 @@ public class FilterController {
         return new ResponseEntity<>(filter, HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/{filterId}")
-    public ResponseEntity<Void> deleteFilter(@PathVariable Integer filterId) {
-        filterService.deleteFilterAndCriteria(filterId);
-        return ResponseEntity.noContent().build();
-    }
+    // @DeleteMapping("/{filterId}")
+    // public ResponseEntity<Void> deleteFilter(@PathVariable Integer filterId) {
+    // filterService.deleteFilterAndCriteria(filterId);
+    // return ResponseEntity.noContent().build();
+    // }
 
     @GetMapping("/criteria-types")
-    public ResponseEntity<List<CriteriaType>> findAllCriteriaTypes() {
-        List<CriteriaType> criteriaTypes = filterService.findAllCriteriaTypes();
-        return ResponseEntity.ok(criteriaTypes);
+    public ResponseEntity<List<CriteriaTypeDTO>> getCriteriaTypes() {
+        List<CriteriaTypeDTO> criteriaTypeDTOs = filterService.getAllCriteriaTypes();
+        return ResponseEntity.ok(criteriaTypeDTOs);
     }
 
     @GetMapping("/comparison-conditions")
-    public ResponseEntity<List<ComparisonCondition>> findAllComparisonConditions() {
-        List<ComparisonCondition> comparisonConditions = filterService.findAllComparisonConditions();
-        return ResponseEntity.ok(comparisonConditions);
+    public ResponseEntity<List<ComparisonConditionDTO>> getComparisonConditions() {
+        List<ComparisonConditionDTO> comparisonConditionDTOs = filterService.getAllComparisonConditions();
+        return ResponseEntity.ok(comparisonConditionDTOs);
     }
 }
