@@ -12,11 +12,18 @@ const emit = defineEmits(['update:criteria', 'delete:criteria'])
 
 const filterStore = useFilterStore()
 
-const localCriteria = ref({ ...props.criteria })
+const localCriteria = ref({
+  ...props.criteria,
+  criteriaType: { ...props.criteria.criteriaType },
+  comparisonCondition: { ...props.criteria.comparisonCondition }
+})
+
 const isInitialLoad = ref(true)
 
 const dateTypeId = computed(() => {
-  const dateType = filterStore.criteriaTypes.find((type) => type.typeName === 'Date')
+  const dateType = filterStore.filterCriteriaOptions.criteriaTypes.find(
+    (type) => type.typeName === 'Date'
+  )
   return dateType ? dateType.criteriaTypeId : null
 })
 
@@ -82,8 +89,8 @@ onMounted(() => {
 })
 
 const filteredConditions = computed(() => {
-  return filterStore.comparisonConditions.filter((condition) => {
-    return condition.criteriaType.criteriaTypeId === localCriteria.value.criteriaType.criteriaTypeId
+  return filterStore.filterCriteriaOptions.comparisonConditions.filter((condition) => {
+    return condition.criteriaTypeId === localCriteria.value.criteriaType.criteriaTypeId
   })
 })
 
@@ -100,7 +107,7 @@ watch(
   <div class="criteria-row">
     <select v-model="localCriteria.criteriaType.criteriaTypeId" @change="onCriteriaTypeChange">
       <option
-        v-for="type in filterStore.criteriaTypes"
+        v-for="type in filterStore.filterCriteriaOptions.criteriaTypes"
         :key="type.criteriaTypeId"
         :value="type.criteriaTypeId"
       >

@@ -1,27 +1,18 @@
 import { defineStore } from 'pinia'
-import {
-  getAllFilters,
-  findAllCriteriaTypes,
-  findAllComparisonConditions,
-  getFilterCriteria
-} from '@/services/apiService.js'
+import { getAllFilters, getFilterOptions, getFilterCriteria } from '@/services/apiService.js'
 
 export const useFilterStore = defineStore('filter', {
   state: () => ({
     filters: [],
-    criteriaTypes: null,
-    comparisonConditions: null,
-    filterCriteria: []
+    filterCriteria: [],
+    filterCriteriaOptions: {}
   }),
   actions: {
     async fetchFilters() {
       this.filters = await getAllFilters()
     },
-    async fetchCriteriaTypes() {
-      this.criteriaTypes = await findAllCriteriaTypes()
-    },
-    async fetchComparisonConditions() {
-      this.comparisonConditions = await findAllComparisonConditions()
+    async fetchFilterCriteriaOptions() {
+      this.filterCriteriaOptions = await getFilterOptions()
     },
     async fetchFilterCriteria(filterId) {
       const data = await getFilterCriteria(filterId)

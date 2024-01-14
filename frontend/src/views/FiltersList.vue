@@ -12,8 +12,7 @@ const openNewFilterModal = () => {
 
 onMounted(async () => {
   await filterStore.fetchFilters()
-  await filterStore.fetchCriteriaTypes()
-  await filterStore.fetchComparisonConditions()
+  await filterStore.fetchFilterCriteriaOptions()
 })
 </script>
 

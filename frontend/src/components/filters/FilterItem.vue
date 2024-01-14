@@ -2,12 +2,7 @@
 import { ref, computed, watch } from 'vue'
 import { useFilterStore } from '@/stores/filterStore'
 import FilterCriteria from '@/components/filters/FilterCriteria.vue'
-import {
-  updateFilterCriteria,
-  updateFilterName,
-  createFilter,
-  deleteFilter
-} from '@/services/apiService'
+import { updateFilter, createFilter, deleteFilter } from '@/services/apiService'
 
 const props = defineProps({
   filter: Object,
@@ -21,15 +16,20 @@ const filterName = ref(props.isNew ? 'New Filter' : props.filter?.filterName || 
 const originalFilterName = ref(props.isNew ? '' : props.filter?.filterName || '')
 
 const filterCriteria = ref([])
-const defaultCriteria = computed(() => filterStore.comparisonConditions[0])
+const defaultCriteria = computed(() => {
+  return {
+    comparisonCondition: filterStore.filterCriteriaOptions.comparisonConditions[0],
+    criteriaType: filterStore.filterCriteriaOptions.criteriaTypes[0]
+  }
+})
 
 const emit = defineEmits(['close'])
 
 const addCriteriaRow = () => {
   const newCriteria = {
     criteriaId: Date.now(),
-    criteriaType: defaultCriteria.value.criteriaType,
-    comparisonCondition: defaultCriteria.value,
+    criteriaType: { ...defaultCriteria.value.criteriaType },
+    comparisonCondition: { ...defaultCriteria.value.comparisonCondition },
     criteriaValue: ''
   }
   filterCriteria.value.push(newCriteria)
@@ -77,23 +77,27 @@ const deleteCriteriaRow = (criteriaId) => {
 }
 
 const saveFilter = async () => {
-  const criteriaDTOList = filterCriteria.value.map((criteria) => ({
-    criteriaTypeId: criteria.criteriaType.criteriaTypeId,
-    conditionId: criteria.comparisonCondition.conditionId,
+  const criteriaData = filterCriteria.value.map((criteria) => ({
+    criteriaType: {
+      criteriaTypeId: criteria.criteriaType.criteriaTypeId,
+      typeName: criteria.criteriaType.typeName
+    },
+    comparisonCondition: {
+      conditionId: criteria.comparisonCondition.conditionId,
+      conditionName: criteria.comparisonCondition.conditionName
+    },
     criteriaValue: criteria.criteriaValue
   }))
 
+  const newFilterData = {
+    filterName: filterName.value,
+    criteria: criteriaData
+  }
+
   if (props.isNew) {
-    const createFilterDTO = {
-      filterName: filterName.value,
-      criteria: criteriaDTOList
-    }
-    await createFilter(createFilterDTO)
+    await createFilter(newFilterData)
   } else {
-    await updateFilterCriteria(props.filter.filterId, criteriaDTOList)
-    if (filterName.value !== originalFilterName.value) {
-      await updateFilterName(props.filter.filterId, filterName.value)
-    }
+    await updateFilter(props.filter.filterId, newFilterData)
   }
 
   await filterStore.fetchFilters()
