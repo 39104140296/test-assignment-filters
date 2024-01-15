@@ -49,14 +49,15 @@ const closeModal = () => {
 }
 
 const handleCriteriaUpdate = (updatedCriteria) => {
-  const index = filterCriteria.value.findIndex((c) => c.criteriaId === updatedCriteria.criteriaId)
-  if (index !== -1) {
-    filterCriteria.value = [
-      ...filterCriteria.value.slice(0, index),
-      updatedCriteria,
-      ...filterCriteria.value.slice(index + 1)
-    ]
-  }
+  //   const index = filterCriteria.value.findIndex((c) => c.criteriaId === updatedCriteria.criteriaId)
+  //   if (index !== -1) {
+  //     filterCriteria.value = [
+  //       ...filterCriteria.value.slice(0, index),
+  //       updatedCriteria,
+  //       ...filterCriteria.value.slice(index + 1)
+  //     ]
+  //   }
+  console.log('upCrit', updatedCriteria)
 }
 
 const deleteCriteriaRow = (criteriaId) => {
@@ -102,11 +103,11 @@ const deleteFilterAndCriteria = async () => {
 watch(
   () => store.filterDetails,
   (newDetails) => {
-    if (!store.isNew && newDetails) {
-      filterName.value = newDetails.filterName
-      originalFilterName.value = newDetails.filterName
-      filterCriteria.value = [...store.filterCriteria]
-    }
+    // if (!store.isNew && newDetails) {
+    filterName.value = newDetails.filterName
+    originalFilterName.value = newDetails.filterName
+    filterCriteria.value = [...store.filterCriteria]
+    // }
   },
   { immediate: true }
 )
