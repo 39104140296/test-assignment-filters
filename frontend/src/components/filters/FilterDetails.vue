@@ -18,13 +18,8 @@ const defaultCriteria = computed(() => {
 })
 
 const addCriteriaRow = () => {
-  const newCriteria = {
-    criteriaId: Date.now(),
-    criteriaType: { ...defaultCriteria.value.criteriaType },
-    comparisonCondition: { ...defaultCriteria.value.comparisonCondition },
-    criteriaValue: ''
-  }
-  filterCriteria.value = [...filterCriteria.value, newCriteria]
+  const newCriteria = { ...defaultCriteria.value, criteriaId: Date.now().toString() }
+  filterCriteria.value.push(newCriteria)
 }
 
 if (store.isNew) {
@@ -49,15 +44,10 @@ const closeModal = () => {
 }
 
 const handleCriteriaUpdate = (updatedCriteria) => {
-  //   const index = filterCriteria.value.findIndex((c) => c.criteriaId === updatedCriteria.criteriaId)
-  //   if (index !== -1) {
-  //     filterCriteria.value = [
-  //       ...filterCriteria.value.slice(0, index),
-  //       updatedCriteria,
-  //       ...filterCriteria.value.slice(index + 1)
-  //     ]
-  //   }
-  console.log('upCrit', updatedCriteria)
+  const index = filterCriteria.value.findIndex((c) => c.criteriaId === updatedCriteria.criteriaId)
+  if (index !== -1) {
+    filterCriteria.value[index] = updatedCriteria
+  }
 }
 
 const deleteCriteriaRow = (criteriaId) => {
@@ -65,9 +55,9 @@ const deleteCriteriaRow = (criteriaId) => {
 }
 
 const saveFilter = async () => {
-  const criteriaSource = store.isNew ? filterCriteria.value : store.filterCriteria
+  // const criteriaSource = store.isNew ? filterCriteria.value : store.filterCriteria
 
-  const criteriaData = criteriaSource.map((criteria) => ({
+  const criteriaData = filterCriteria.value.map((criteria) => ({
     criteriaType: {
       criteriaTypeId: criteria.criteriaType.criteriaTypeId,
       typeName: criteria.criteriaType.typeName
@@ -103,11 +93,11 @@ const deleteFilterAndCriteria = async () => {
 watch(
   () => store.filterDetails,
   (newDetails) => {
-    // if (!store.isNew && newDetails) {
-    filterName.value = newDetails.filterName
-    originalFilterName.value = newDetails.filterName
-    filterCriteria.value = [...store.filterCriteria]
-    // }
+    if (!store.isNew && newDetails) {
+      filterName.value = newDetails.filterName
+      originalFilterName.value = newDetails.filterName
+      filterCriteria.value = [...store.filterCriteria]
+    }
   },
   { immediate: true }
 )
@@ -118,8 +108,10 @@ watch(
     <div v-if="store.isModalModeOn" class="modal-overlay" @click.self="closeModal">
       <div class="modal-content" @click.stop>
         <input v-model="filterName" class="filter-name-input" />
-        <div v-for="criteria in filterCriteria" :key="criteria.criteriaId">
+        <div>
           <FilterCriteria
+            v-for="criteria in filterCriteria"
+            :key="criteria.criteriaId"
             :criteria="criteria"
             :showDeleteButton="filterCriteria.length > 1"
             @update:criteria="handleCriteriaUpdate"
@@ -136,8 +128,10 @@ watch(
     </div>
     <div v-if="!store.isModalModeOn" class="dialog">
       <input v-model="filterName" class="filter-name-input" />
-      <div v-for="criteria in filterCriteria" :key="criteria.criteriaId">
+      <div>
         <FilterCriteria
+          v-for="criteria in filterCriteria"
+          :key="criteria.criteriaId"
           :criteria="criteria"
           :showDeleteButton="filterCriteria.length > 1"
           @update:criteria="handleCriteriaUpdate"

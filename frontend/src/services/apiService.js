@@ -28,7 +28,7 @@ export const updateFilter = async (filterId, filterData) => {
   try {
     const response = await axiosInstance.put(`/${filterId}`, {
       filterName: filterData.filterName,
-      criteria: filterData.filterCriteria
+      filterCriteria: filterData.filterCriteria
     })
     return response.data
   } catch (error) {
@@ -39,7 +39,10 @@ export const updateFilter = async (filterId, filterData) => {
 
 export const createFilter = async (newFilterData) => {
   try {
-    const response = await axiosInstance.post('', newFilterData)
+    const response = await axiosInstance.post('', {
+      filterName: newFilterData.filterName,
+      criteria: newFilterData.filterCriteria
+    })
     return response.data
   } catch (error) {
     console.error('Error creating new filter: ', error)

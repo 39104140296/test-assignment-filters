@@ -95,9 +95,9 @@ const filteredConditions = computed(() => {
 })
 
 watch(
-  localCriteria,
-  () => {
-    emit('update:criteria', { ...localCriteria.value })
+  () => ({ ...localCriteria.value }),
+  (newVal) => {
+    emit('update:criteria', newVal)
   },
   { deep: true }
 )
