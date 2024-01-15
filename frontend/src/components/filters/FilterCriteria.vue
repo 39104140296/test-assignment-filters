@@ -20,16 +20,16 @@ const localCriteria = ref({
 
 const isInitialLoad = ref(true)
 
+const isDateType = computed(
+  () => localCriteria.value.criteriaType.criteriaTypeId === dateTypeId.value
+)
+
 const dateTypeId = computed(() => {
   const dateType = filterStore.filterCriteriaOptions.criteriaTypes.find(
     (type) => type.typeName === 'Date'
   )
   return dateType ? dateType.criteriaTypeId : null
 })
-
-const isDateType = computed(
-  () => localCriteria.value.criteriaType.criteriaTypeId === dateTypeId.value
-)
 
 const initialDate =
   isDateType.value && localCriteria.value.criteriaValue

@@ -1,34 +1,50 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { onMounted } from 'vue'
 import { useFilterStore } from '@/stores/filterStore'
 import FilterItem from '@/components/filters/FilterItem.vue'
+import FilterDetails from '@/components/filters/FilterDetails.vue'
 
-const filterStore = useFilterStore()
-const isNewFilterModalOpen = ref(false)
-
-const openNewFilterModal = () => {
-  isNewFilterModalOpen.value = true
-}
+const store = useFilterStore()
 
 onMounted(async () => {
-  await filterStore.fetchFilters()
-  await filterStore.fetchFilterCriteriaOptions()
+  await store.fetchFilters()
+  await store.fetchFilterCriteriaOptions()
 })
 </script>
 
 <template>
   <div>
+    <FilterDetails v-if="store.isFilterDetailsOpen && !store.isModalModeOn" />
     <h1>Filters</h1>
-    <FilterItem v-if="isNewFilterModalOpen" :isNew="true" @close="isNewFilterModalOpen = false" />
-    <div v-for="filter in filterStore.filters" :key="filter.filterId">
-      <FilterItem :filter="filter" />
+    <div class="filters">
+      <FilterItem v-for="filter in store.filters" :key="filter.filterId" :filter="filter" />
     </div>
-    <button class="add-new-btn" @click="openNewFilterModal">Add</button>
+    <div class="buttons">
+      <button class="add-btn" @click="openNewFilterModal">Add</button>
+      <button class="mode-btn" v-if="!store.isModalModeOn" @click="store.toggleModalMode">
+        Modal
+      </button>
+      <button class="mode-btn" v-if="store.isModalModeOn" @click="store.toggleModalMode">
+        Dialog
+      </button>
+    </div>
   </div>
 </template>
 
 <style scoped>
-.add-new-btn {
+.filters {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.buttons {
+  display: flex;
+  justify-content: space-between;
+}
+
+.add-btn,
+.mode-btn {
   padding: 2px 6px;
   border: 1px solid #f5f5f5;
   background-color: #f5f5f5;
@@ -37,7 +53,8 @@ onMounted(async () => {
   font-size: 18px;
 }
 
-.add-new-btn:hover {
+.add-btn:hover,
+.mode-btn:hover {
   background-color: #e2e2ff;
 }
 </style>
