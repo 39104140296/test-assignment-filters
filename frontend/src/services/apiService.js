@@ -24,9 +24,12 @@ export const getFilterCriteria = async (filterId) => {
   }
 }
 
-export const updateFilter = async (filterId, filterName, filterCriteria) => {
+export const updateFilter = async (filterId, filterData) => {
   try {
-    const response = await axiosInstance.put(`/${filterId}`, { filterName, filterCriteria })
+    const response = await axiosInstance.put(`/${filterId}`, {
+      filterName: filterData.filterName,
+      criteria: filterData.filterCriteria
+    })
     return response.data
   } catch (error) {
     console.error('Error updating filter: ', error)

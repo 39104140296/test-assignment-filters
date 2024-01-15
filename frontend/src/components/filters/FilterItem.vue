@@ -7,10 +7,6 @@ const props = defineProps({
 })
 
 const store = useFilterStore()
-
-// const openFilterDetails = () => {
-//   store.isModalModeOn ? store.openFilterDetails() : store.setFilterDetails(props.filter)
-// }
 </script>
 
 <template>
@@ -19,11 +15,7 @@ const store = useFilterStore()
   </div>
 
   <Teleport to="body">
-    <FilterDetails
-      v-if="store.isFilterDetailsOpen && store.isModalModeOn"
-      :filter="filter"
-      :isNew="false"
-    />
+    <FilterDetails v-if="store.isFilterDetailsOpen && store.isModalModeOn" />
   </Teleport>
 </template>
 

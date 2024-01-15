@@ -9,7 +9,6 @@ export const useFilterStore = defineStore('filter', {
     isFilterDetailsOpen: false,
     filterDetails: {},
     isModalModeOn: true,
-    isEditModeOn: true,
     isNew: false
   }),
   actions: {
@@ -33,15 +32,18 @@ export const useFilterStore = defineStore('filter', {
       await this.fetchFilterCriteria()
       this.isFilterDetailsOpen = true
     },
-    // setFilterDetails(filter) {
-    //   this.filterDetails = filter
-    //   this.openFilterDetails()
-    // },
+    openNewFilterDetails() {
+      this.isNew = true
+      this.isFilterDetailsOpen = true
+    },
     closeFilterDetails() {
       this.isFilterDetailsOpen = false
     },
     toggleModalMode() {
       this.isModalModeOn = !this.isModalModeOn
+    },
+    setIsNewToFalse() {
+      this.isNew = false
     }
   }
 })

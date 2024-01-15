@@ -1,16 +1,10 @@
 <script setup>
-import { ref, computed, watch, onBeforeUpdate } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useFilterStore } from '@/stores/filterStore'
 import FilterCriteria from '@/components/filters/FilterCriteria.vue'
 import { updateFilter, createFilter, deleteFilter } from '@/services/apiService'
 
-// const store = definestore({
-//   filter: Object,
-//   isNew: Boolean
-// })
-
 const store = useFilterStore()
-const showModal = ref(false)
 
 const filterName = ref(store.isNew ? 'New Filter' : store.filterDetails?.filterName || '')
 const originalFilterName = ref(store.isNew ? '' : store.filterDetails?.filterName || '')
@@ -30,11 +24,10 @@ const addCriteriaRow = () => {
     comparisonCondition: { ...defaultCriteria.value.comparisonCondition },
     criteriaValue: ''
   }
-  filterCriteria.value.push(newCriteria)
+  filterCriteria.value = [...filterCriteria.value, newCriteria]
 }
 
 if (store.isNew) {
-  showModal.value = true
   addCriteriaRow()
 }
 
@@ -49,13 +42,20 @@ watch(
 )
 
 const closeModal = () => {
+  if (store.isNew) {
+    store.setIsNewToFalse()
+  }
   store.closeFilterDetails()
 }
 
 const handleCriteriaUpdate = (updatedCriteria) => {
   const index = filterCriteria.value.findIndex((c) => c.criteriaId === updatedCriteria.criteriaId)
   if (index !== -1) {
-    filterCriteria.value[index] = updatedCriteria
+    filterCriteria.value = [
+      ...filterCriteria.value.slice(0, index),
+      updatedCriteria,
+      ...filterCriteria.value.slice(index + 1)
+    ]
   }
 }
 
@@ -64,7 +64,9 @@ const deleteCriteriaRow = (criteriaId) => {
 }
 
 const saveFilter = async () => {
-  const criteriaData = filterCriteria.value.map((criteria) => ({
+  const criteriaSource = store.isNew ? filterCriteria.value : store.filterCriteria
+
+  const criteriaData = criteriaSource.map((criteria) => ({
     criteriaType: {
       criteriaTypeId: criteria.criteriaType.criteriaTypeId,
       typeName: criteria.criteriaType.typeName
@@ -78,15 +80,15 @@ const saveFilter = async () => {
 
   const newFilterData = {
     filterName: filterName.value,
-    criteria: criteriaData
+    filterCriteria: criteriaData
   }
 
   if (store.isNew) {
     await createFilter(newFilterData)
+    store.setIsNewToFalse()
   } else {
     await updateFilter(store.filterDetails.filterId, newFilterData)
   }
-
   await store.fetchFilters()
   closeModal()
 }
@@ -96,14 +98,6 @@ const deleteFilterAndCriteria = async () => {
   await store.fetchFilters()
   closeModal()
 }
-
-// onBeforeUpdate(() => {
-//   if (!store.isNew && store.filterDetails) {
-//     filterName.value = store.filterDetails.filterName
-//     originalFilterName.value = store.filterDetails.filterName
-//     filterCriteria.value = [...store.filterCriteria]
-//   }
-// })
 
 watch(
   () => store.filterDetails,
@@ -119,8 +113,27 @@ watch(
 </script>
 
 <template>
-  <div v-if="store.isModalModeOn" class="modal-overlay" @click.self="closeModal">
-    <div class="modal-content" @click.stop>
+  <div>
+    <div v-if="store.isModalModeOn" class="modal-overlay" @click.self="closeModal">
+      <div class="modal-content" @click.stop>
+        <input v-model="filterName" class="filter-name-input" />
+        <div v-for="criteria in filterCriteria" :key="criteria.criteriaId">
+          <FilterCriteria
+            :criteria="criteria"
+            :showDeleteButton="filterCriteria.length > 1"
+            @update:criteria="handleCriteriaUpdate"
+            @delete:criteria="deleteCriteriaRow"
+          />
+        </div>
+        <button class="add-row-btn" @click="addCriteriaRow">Add Row</button>
+        <button class="save-btn" @click="saveFilter">Save</button>
+        <button v-if="!store.isNew" class="delete-btn" @click="deleteFilterAndCriteria">
+          Delete
+        </button>
+        <button class="close-btn" @click="closeModal">Close</button>
+      </div>
+    </div>
+    <div v-if="!store.isModalModeOn" class="dialog">
       <input v-model="filterName" class="filter-name-input" />
       <div v-for="criteria in filterCriteria" :key="criteria.criteriaId">
         <FilterCriteria
@@ -132,42 +145,19 @@ watch(
       </div>
       <button class="add-row-btn" @click="addCriteriaRow">Add Row</button>
       <button class="save-btn" @click="saveFilter">Save</button>
-      <button v-if="!isNew" class="delete-btn" @click="deleteFilterAndCriteria">Delete</button>
+      <button v-if="!store.isNew" class="delete-btn" @click="deleteFilterAndCriteria">
+        Delete
+      </button>
       <button class="close-btn" @click="closeModal">Close</button>
     </div>
-  </div>
-  <div v-if="!store.isModalModeOn" class="dialog">
-    <input v-model="filterName" class="filter-name-input" />
-    <div v-for="criteria in filterCriteria" :key="criteria.criteriaId">
-      <FilterCriteria
-        :criteria="criteria"
-        :showDeleteButton="filterCriteria.length > 1"
-        @update:criteria="handleCriteriaUpdate"
-        @delete:criteria="deleteCriteriaRow"
-      />
-    </div>
-    <button class="add-row-btn" @click="addCriteriaRow">Add Row</button>
-    <button class="save-btn" @click="saveFilter">Save</button>
-    <button v-if="!isNew" class="delete-btn" @click="deleteFilterAndCriteria">Delete</button>
-    <button class="close-btn" @click="closeModal">Close</button>
   </div>
 </template>
 
 <style scoped>
-.filter-item {
-  cursor: pointer;
-  padding: 16px;
-  margin-bottom: 8px;
-  background-color: #f5f5f5;
-  border: 1px solid #e1e1e1;
-  border-radius: 6px;
-  transition: background-color 0.2s;
+.dialog {
+  border: 2px solid green;
+  width: 100%;
 }
-
-.filter-item:hover {
-  background-color: #e2e2ff;
-}
-
 .modal-overlay {
   position: fixed;
   top: 0;

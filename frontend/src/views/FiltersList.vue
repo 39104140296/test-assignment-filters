@@ -20,7 +20,7 @@ onMounted(async () => {
       <FilterItem v-for="filter in store.filters" :key="filter.filterId" :filter="filter" />
     </div>
     <div class="buttons">
-      <button class="add-btn" @click="openNewFilterModal">Add</button>
+      <button class="add-btn" @click="store.openNewFilterDetails">Add</button>
       <button class="mode-btn" v-if="!store.isModalModeOn" @click="store.toggleModalMode">
         Modal
       </button>
