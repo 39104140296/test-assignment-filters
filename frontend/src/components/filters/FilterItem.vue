@@ -1,5 +1,5 @@
 <script setup>
-import { useFilterStore } from '@/stores/filterStore'
+import { useFilterStore } from '@/store/filterStore'
 import FilterDetails from '@/components/filters/FilterDetails.vue'
 
 const props = defineProps({

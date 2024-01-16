@@ -1,6 +1,6 @@
 <script setup>
 import { ref, computed, watch } from 'vue'
-import { useFilterStore } from '@/stores/filterStore'
+import { useFilterStore } from '@/store/filterStore'
 import FilterCriteria from '@/components/filters/FilterCriteria.vue'
 import { updateFilter, createFilter, deleteFilter } from '@/services/apiService'
 
@@ -106,7 +106,7 @@ watch(
 <template>
   <div>
     <div v-if="store.isModalModeOn" class="modal-overlay" @click.self="closeModal">
-      <div class="dialog">
+      <div class="modal">
         <div class="filter-header">
           <h3>{{ filterName }}</h3>
           <button class="close-button" @click="closeModal">&times;</button>
@@ -175,7 +175,20 @@ watch(
 </template>
 
 <style scoped>
-.dialog {
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 1000;
+}
+.dialog,
+.modal {
   display: grid;
   grid-template-rows: auto 1fr auto;
   width: 48rem;
@@ -186,6 +199,10 @@ watch(
   max-height: 40rem;
   resize: vertical;
   overflow: auto;
+}
+
+.modal {
+  border: none;
 }
 
 .filter-header {
@@ -280,40 +297,5 @@ h3 {
   height: 36px;
   margin-top: 30px;
   background-color: rgb(193, 197, 201);
-}
-
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: rgba(0, 0, 0, 0.6);
-  z-index: 1000;
-}
-
-.modal-content {
-  background: white;
-  padding: 24px;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  width: 90%;
-  width: 600px;
-  z-index: 1001;
-  position: relative;
-}
-.close-btn {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  padding: 2px 6px;
-  border: 1px solid #f5f5f5;
-  background-color: #f5f5f5;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 14px;
 }
 </style>

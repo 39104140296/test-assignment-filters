@@ -1,6 +1,6 @@
 <script setup>
 import { ref, computed, watch, onMounted } from 'vue'
-import { useFilterStore } from '@/stores/filterStore'
+import { useFilterStore } from '@/store/filterStore'
 import { format, getDaysInMonth, parseISO } from 'date-fns'
 
 const props = defineProps({

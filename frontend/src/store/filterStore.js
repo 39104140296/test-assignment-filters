@@ -1,16 +1,23 @@
 import { defineStore } from 'pinia'
 import { getAllFilters, getFilterOptions, getFilterCriteria } from '@/services/apiService.js'
 
+const localStorageKey = 'modalMode'
+
 export const useFilterStore = defineStore('filter', {
-  state: () => ({
-    filters: [],
-    filterCriteria: [],
-    filterCriteriaOptions: {},
-    isFilterDetailsOpen: false,
-    filterDetails: {},
-    isModalModeOn: true,
-    isNew: false
-  }),
+  state: () => {
+    const isModalModeOn = localStorage.getItem(localStorageKey)
+      ? JSON.parse(localStorage.getItem(localStorageKey))
+      : false
+    return {
+      filters: [],
+      filterCriteria: [],
+      filterCriteriaOptions: {},
+      isFilterDetailsOpen: false,
+      filterDetails: {},
+      isModalModeOn,
+      isNew: false
+    }
+  },
   actions: {
     async fetchFilters() {
       this.filters = await getAllFilters()
@@ -41,6 +48,7 @@ export const useFilterStore = defineStore('filter', {
     },
     toggleModalMode() {
       this.isModalModeOn = !this.isModalModeOn
+      localStorage.setItem(localStorageKey, JSON.stringify(this.isModalModeOn))
     },
     setIsNewToFalse() {
       this.isNew = false

@@ -1,6 +1,6 @@
 <script setup>
 import { onMounted } from 'vue'
-import { useFilterStore } from '@/stores/filterStore'
+import { useFilterStore } from '@/store/filterStore'
 import FilterItem from '@/components/filters/FilterItem.vue'
 import FilterDetails from '@/components/filters/FilterDetails.vue'
 
@@ -20,7 +20,10 @@ onMounted(async () => {
     </div>
     <div class="buttons">
       <button class="add-btn" @click="store.openNewFilterDetails">+ Add Filter</button>
-      <button class="mode-btn" @click="store.toggleModalMode">Dialog Mode</button>
+      <button class="mode-btn" @click="store.toggleModalMode">
+        <div v-if="store.isModalModeOn">Dialog Mode</div>
+        <div v-if="!store.isModalModeOn">Modal Mode</div>
+      </button>
     </div>
   </div>
 </template>
