@@ -26,16 +26,6 @@ if (store.isNew) {
   addCriteriaRow()
 }
 
-watch(
-  () => store.filterDetails?.filterName,
-  (newName) => {
-    if (!store.isNew) {
-      filterName.value = newName
-      originalFilterName.value = newName
-    }
-  }
-)
-
 const closeModal = () => {
   if (store.isNew) {
     store.setIsNewToFalse()
@@ -46,7 +36,7 @@ const closeModal = () => {
 const handleCriteriaUpdate = (updatedCriteria) => {
   const index = filterCriteria.value.findIndex((c) => c.criteriaId === updatedCriteria.criteriaId)
   if (index !== -1) {
-    filterCriteria.value[index] = updatedCriteria
+    filterCriteria.value.splice(index, 1, updatedCriteria)
   }
 }
 
@@ -55,8 +45,6 @@ const deleteCriteriaRow = (criteriaId) => {
 }
 
 const saveFilter = async () => {
-  // const criteriaSource = store.isNew ? filterCriteria.value : store.filterCriteria
-
   const criteriaData = filterCriteria.value.map((criteria) => ({
     criteriaType: {
       criteriaTypeId: criteria.criteriaType.criteriaTypeId,
@@ -90,6 +78,16 @@ const deleteFilterAndCriteria = async () => {
   closeModal()
 }
 
+const loadFilterCriteria = async () => {
+  if (!store.isNew) {
+    await store.fetchFilterCriteria()
+    filterCriteria.value = [...store.filterCriteria]
+  } else {
+    filterCriteria.value = []
+    addCriteriaRow()
+  }
+}
+
 watch(
   () => store.filterDetails,
   (newDetails) => {
@@ -99,7 +97,26 @@ watch(
       filterCriteria.value = [...store.filterCriteria]
     }
   },
-  { immediate: true }
+  { immediate: true, deep: true }
+)
+
+watch(
+  () => store.filterDetails?.filterName,
+  (newName) => {
+    if (!store.isNew) {
+      filterName.value = newName
+      originalFilterName.value = newName
+    }
+  }
+)
+
+watch(
+  () => store.filterDetails.filterId,
+  (newFilterId, oldFilterId) => {
+    if (newFilterId !== oldFilterId) {
+      loadFilterCriteria()
+    }
+  }
 )
 </script>
 

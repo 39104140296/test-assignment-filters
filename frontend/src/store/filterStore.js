@@ -28,21 +28,16 @@ export const useFilterStore = defineStore('filter', {
     async fetchFilterCriteria() {
       this.filterCriteria = await getFilterCriteria(this.filterDetails.filterId)
     },
-    updateCriteria(criteriaId, updatedCriteriaData) {
-      const index = this.filterCriteria.findIndex((c) => c.criteriaId === criteriaId)
-      if (index !== -1) {
-        this.filterCriteria[index] = { ...this.filterCriteria[index], ...updatedCriteriaData }
-      }
-    },
     async openFilterDetails(filter) {
+      this.filterDetails = filter
       if (this.isNew) {
         this.isNew = false
       }
-      this.filterDetails = filter
       await this.fetchFilterCriteria()
       this.isFilterDetailsOpen = true
     },
     openNewFilterDetails() {
+      this.filterDetails = {}
       this.isNew = true
       this.isFilterDetailsOpen = true
     },
