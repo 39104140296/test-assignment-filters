@@ -105,51 +105,64 @@ watch(
 
 <template>
   <div class="criteria-row">
-    <select v-model="localCriteria.criteriaType.criteriaTypeId" @change="onCriteriaTypeChange">
-      <option
-        v-for="type in filterStore.filterCriteriaOptions.criteriaTypes"
-        :key="type.criteriaTypeId"
-        :value="type.criteriaTypeId"
-      >
-        {{ type.typeName }}
-      </option>
-    </select>
+    <div class="flex-container">
+      <div class="flex-child">
+        <select
+          class="select-type"
+          v-model="localCriteria.criteriaType.criteriaTypeId"
+          @change="onCriteriaTypeChange"
+        >
+          <option
+            v-for="type in filterStore.filterCriteriaOptions.criteriaTypes"
+            :key="type.criteriaTypeId"
+            :value="type.criteriaTypeId"
+          >
+            {{ type.typeName }}
+          </option>
+        </select>
+      </div>
 
-    <select v-model="localCriteria.comparisonCondition.conditionId">
-      <option
-        v-for="condition in filteredConditions"
-        :key="condition.conditionId"
-        :value="condition.conditionId"
-      >
-        {{ condition.conditionName }}
-      </option>
-    </select>
+      <div class="flex-child">
+        <select class="select-condition" v-model="localCriteria.comparisonCondition.conditionId">
+          <option
+            v-for="condition in filteredConditions"
+            :key="condition.conditionId"
+            :value="condition.conditionId"
+          >
+            {{ condition.conditionName }}
+          </option>
+        </select>
+      </div>
 
-    <div v-if="isDateType">
-      <select v-model="selectedDay">
-        <option v-for="day in days" :key="day" :value="day">{{ day }}</option>
-      </select>
-      <select v-model="selectedMonth">
-        <option v-for="(month, index) in months" :key="index" :value="index + 1">
-          {{ month }}
-        </option>
-      </select>
-      <select v-model="selectedYear">
-        <option v-for="year in years" :key="year" :value="year">{{ year }}</option>
-      </select>
+      <div class="flex-child" v-if="isDateType">
+        <div class="date-boxes">
+          <select v-model="selectedDay">
+            <option v-for="day in days" :key="day" :value="day">{{ day }}</option>
+          </select>
+          <select v-model="selectedMonth">
+            <option v-for="(month, index) in months" :key="index" :value="index + 1">
+              {{ month }}
+            </option>
+          </select>
+          <select v-model="selectedYear">
+            <option v-for="year in years" :key="year" :value="year">{{ year }}</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="flex-child" v-else>
+        <input v-model="localCriteria.criteriaValue" />
+      </div>
     </div>
-
-    <input v-else v-model="localCriteria.criteriaValue" />
-    <button class="delete-btn" v-if="showDeleteButton" @click="removeCriteria">Delete</button>
+    <button class="delete-btn" v-if="showDeleteButton" @click="removeCriteria">-</button>
   </div>
 </template>
 
 <style scoped>
 .criteria-row {
   display: flex;
-  gap: 8px;
-  padding: 8px;
-  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
 }
 
 .criteria-row select,
@@ -159,16 +172,41 @@ watch(
   border-radius: 4px;
 }
 
+.flex-container {
+  display: flex;
+  width: 600px;
+}
+.flex-child {
+  flex: 1;
+  min-width: 180px;
+}
+
+.select-type,
+.select-condition {
+  width: 180px;
+}
+
+.date-boxes {
+  display: flex;
+  justify-content: space-between;
+  width: 188px;
+}
+
+input {
+  width: 180px;
+}
+
 .delete-btn {
-  padding: 2px 6px;
-  border: 1px solid #f5f5f5;
-  background-color: #f5f5f5;
+  width: 1.45rem;
+  border: none;
+  background-color: #6c6d6d;
   border-radius: 6px;
   cursor: pointer;
   font-size: 14px;
+  color: #ccc;
 }
-
 .delete-btn:hover {
-  background-color: #e2e2ff;
+  background-color: #f13a3a;
+  color: #ccc;
 }
 </style>

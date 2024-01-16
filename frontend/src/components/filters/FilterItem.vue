@@ -21,15 +21,25 @@ const store = useFilterStore()
 
 <style scoped>
 .filter-item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 4px;
+  background-color: rgb(193, 197, 201);
+  color: #fff;
   cursor: pointer;
-  padding: 16px;
-  background-color: #f5f5f5;
-  border: 1px solid #e1e1e1;
-  border-radius: 6px;
   transition: background-color 0.2s;
+  height: 2.5rem;
 }
 
 .filter-item:hover {
-  background-color: #e2e2ff;
+  background-color: rgb(34, 153, 238);
+}
+
+h3 {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 6rem;
 }
 </style>

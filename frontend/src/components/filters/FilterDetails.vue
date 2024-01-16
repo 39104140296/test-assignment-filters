@@ -106,53 +106,182 @@ watch(
 <template>
   <div>
     <div v-if="store.isModalModeOn" class="modal-overlay" @click.self="closeModal">
-      <div class="modal-content" @click.stop>
-        <input v-model="filterName" class="filter-name-input" />
-        <div>
-          <FilterCriteria
-            v-for="criteria in filterCriteria"
-            :key="criteria.criteriaId"
-            :criteria="criteria"
-            :showDeleteButton="filterCriteria.length > 1"
-            @update:criteria="handleCriteriaUpdate"
-            @delete:criteria="deleteCriteriaRow"
-          />
+      <div class="dialog">
+        <div class="filter-header">
+          <h3>{{ filterName }}</h3>
+          <button class="close-button" @click="closeModal">&times;</button>
         </div>
-        <button class="add-row-btn" @click="addCriteriaRow">Add Row</button>
+        <div class="filter-body">
+          <div class="filter-name">
+            <h4>Filter name</h4>
+            <input v-model="filterName" class="filter-name-input" />
+          </div>
+          <div class="criteria-box">
+            <h4>Criteria</h4>
+            <div class="criteria-container">
+              <FilterCriteria
+                v-for="criteria in filterCriteria"
+                :key="criteria.criteriaId"
+                :criteria="criteria"
+                :showDeleteButton="filterCriteria.length > 1"
+                @update:criteria="handleCriteriaUpdate"
+                @delete:criteria="deleteCriteriaRow"
+              />
+            </div>
+          </div>
+          <button class="add-row-btn" @click="addCriteriaRow">+ Add Row</button>
+        </div>
+        <div class="filter-footer">
+          <button class="save-btn" @click="saveFilter">Save</button>
+          <button v-if="!store.isNew" class="delete-btn" @click="deleteFilterAndCriteria">
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+    <div v-if="!store.isModalModeOn" class="dialog">
+      <div class="filter-header">
+        <h3>{{ filterName }}</h3>
+        <button class="close-button" @click="closeModal">&times;</button>
+      </div>
+      <div class="filter-body">
+        <div class="filter-name">
+          <h4>Filter name</h4>
+          <input v-model="filterName" class="filter-name-input" />
+        </div>
+        <div class="criteria-box">
+          <h4>Criteria</h4>
+          <div class="criteria-container">
+            <FilterCriteria
+              v-for="criteria in filterCriteria"
+              :key="criteria.criteriaId"
+              :criteria="criteria"
+              :showDeleteButton="filterCriteria.length > 1"
+              @update:criteria="handleCriteriaUpdate"
+              @delete:criteria="deleteCriteriaRow"
+            />
+          </div>
+        </div>
+        <button class="add-row-btn" @click="addCriteriaRow">+ Add Row</button>
+      </div>
+      <div class="filter-footer">
         <button class="save-btn" @click="saveFilter">Save</button>
         <button v-if="!store.isNew" class="delete-btn" @click="deleteFilterAndCriteria">
           Delete
         </button>
-        <button class="close-btn" @click="closeModal">Close</button>
       </div>
-    </div>
-    <div v-if="!store.isModalModeOn" class="dialog">
-      <input v-model="filterName" class="filter-name-input" />
-      <div>
-        <FilterCriteria
-          v-for="criteria in filterCriteria"
-          :key="criteria.criteriaId"
-          :criteria="criteria"
-          :showDeleteButton="filterCriteria.length > 1"
-          @update:criteria="handleCriteriaUpdate"
-          @delete:criteria="deleteCriteriaRow"
-        />
-      </div>
-      <button class="add-row-btn" @click="addCriteriaRow">Add Row</button>
-      <button class="save-btn" @click="saveFilter">Save</button>
-      <button v-if="!store.isNew" class="delete-btn" @click="deleteFilterAndCriteria">
-        Delete
-      </button>
-      <button class="close-btn" @click="closeModal">Close</button>
     </div>
   </div>
 </template>
 
 <style scoped>
 .dialog {
-  border: 2px solid green;
-  width: 100%;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  width: 48rem;
+  background: #fff;
+  border: 1px solid rgb(193, 197, 201);
+  border-radius: 8px;
+  min-height: 20rem;
+  max-height: 40rem;
+  resize: vertical;
+  overflow: auto;
 }
+
+.filter-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #fff;
+  height: 36px;
+  border: 1px solid rgb(34, 153, 238);
+  background-color: rgb(34, 153, 238);
+}
+
+.close-button {
+  height: 36px;
+  width: 36px;
+  color: #fff;
+  background-color: rgb(34, 153, 238);
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.filter-body {
+  display: flex;
+  flex-direction: column;
+  margin-top: 20px;
+}
+
+.filter-name,
+.criteria-box {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.filter-name input {
+  padding: 4px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+h3,
+h4 {
+  width: 100px;
+  padding-left: 10px;
+  margin: 0;
+}
+
+h3 {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 30rem;
+}
+
+.criteria-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.add-row-btn,
+.save-btn,
+.delete-btn {
+  background-color: #6c6d6d;
+  color: #fff;
+  width: 90px;
+  height: 24px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.add-row-btn {
+  margin: 10px auto 0 auto;
+}
+
+.add-row-btn:hover,
+.save-btn:hover {
+  background: rgb(34, 153, 238);
+}
+
+.delete-btn:hover {
+  background-color: #f13a3a;
+}
+
+.filter-footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  height: 36px;
+  margin-top: 30px;
+  background-color: rgb(193, 197, 201);
+}
+
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -176,18 +305,6 @@ watch(
   z-index: 1001;
   position: relative;
 }
-
-.add-row-btn,
-.save-btn,
-.delete-btn {
-  margin: 2px;
-  padding: 2px 6px;
-  border: 1px solid #f5f5f5;
-  background-color: #f5f5f5;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 14px;
-}
 .close-btn {
   position: absolute;
   top: 10px;
@@ -198,12 +315,5 @@ watch(
   border-radius: 6px;
   cursor: pointer;
   font-size: 14px;
-}
-
-.add-row-btn:hover,
-.save-btn:hover,
-.delete-btn:hover,
-.close-btn:hover {
-  background-color: #e2e2ff;
 }
 </style>

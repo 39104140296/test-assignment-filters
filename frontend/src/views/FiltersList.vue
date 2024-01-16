@@ -15,28 +15,23 @@ onMounted(async () => {
 <template>
   <div>
     <FilterDetails v-if="store.isFilterDetailsOpen && !store.isModalModeOn" />
-    <h1>Filters</h1>
     <div class="filters">
       <FilterItem v-for="filter in store.filters" :key="filter.filterId" :filter="filter" />
     </div>
     <div class="buttons">
-      <button class="add-btn" @click="store.openNewFilterDetails">Add</button>
-      <button class="mode-btn" v-if="!store.isModalModeOn" @click="store.toggleModalMode">
-        Modal
-      </button>
-      <button class="mode-btn" v-if="store.isModalModeOn" @click="store.toggleModalMode">
-        Dialog
-      </button>
+      <button class="add-btn" @click="store.openNewFilterDetails">+ Add Filter</button>
+      <button class="mode-btn" @click="store.toggleModalMode">Dialog Mode</button>
     </div>
   </div>
 </template>
 
 <style scoped>
 .filters {
+  width: 48rem;
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 8px;
-  margin-bottom: 16px;
+  padding: 16px 0;
 }
 .buttons {
   display: flex;
@@ -45,16 +40,21 @@ onMounted(async () => {
 
 .add-btn,
 .mode-btn {
-  padding: 2px 6px;
-  border: 1px solid #f5f5f5;
-  background-color: #f5f5f5;
-  border-radius: 6px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  border-radius: 4px;
+  color: #fff;
   cursor: pointer;
-  font-size: 18px;
+  background-color: #6c6d6d;
+  width: 90px;
+  height: 24px;
+  transition: background-color 0.2s;
 }
 
 .add-btn:hover,
 .mode-btn:hover {
-  background-color: #e2e2ff;
+  background-color: rgb(34, 153, 238);
 }
 </style>
