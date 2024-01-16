@@ -35,6 +35,9 @@ export const useFilterStore = defineStore('filter', {
       }
     },
     async openFilterDetails(filter) {
+      if (this.isNew) {
+        this.isNew = false
+      }
       this.filterDetails = filter
       await this.fetchFilterCriteria()
       this.isFilterDetailsOpen = true
