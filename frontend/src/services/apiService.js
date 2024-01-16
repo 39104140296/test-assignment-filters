@@ -63,7 +63,7 @@ export const deleteFilter = async (filterId) => {
 
 export const getFilterOptions = async () => {
   try {
-    const response = await axiosInstance.get('/filter-options')
+    const response = await axiosInstance.get('/options')
     return response.data
   } catch (error) {
     console.error('Error fetching filter options: ', error)
