@@ -1,10 +1,10 @@
-package com.example.backend.controller.request;
+package com.example.backend.controller.response;
 
 import com.example.backend.dto.CriteriaTypeDTO;
 import com.example.backend.dto.ComparisonConditionDTO;
 import java.util.List;
 
-public class GetFilterOptionsRequest {
+public class GetFilterOptionsResponse {
     private List<CriteriaTypeDTO> criteriaTypes;
     private List<ComparisonConditionDTO> comparisonConditions;
 

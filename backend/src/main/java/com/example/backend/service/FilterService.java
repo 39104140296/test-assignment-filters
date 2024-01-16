@@ -9,8 +9,8 @@ import jakarta.persistence.EntityNotFoundException;
 
 import com.example.backend.dto.CriteriaTypeDTO;
 import com.example.backend.controller.request.CreateFilterRequest;
-import com.example.backend.controller.request.GetFilterOptionsRequest;
 import com.example.backend.controller.request.UpdateFilterRequest;
+import com.example.backend.controller.response.GetFilterOptionsResponse;
 import com.example.backend.dto.ComparisonConditionDTO;
 import com.example.backend.dto.FilterDTO;
 import com.example.backend.dto.FilterCriteriaDTO;
@@ -167,8 +167,8 @@ public class FilterService {
         filterRepository.delete(filter);
     }
 
-    public GetFilterOptionsRequest getFilterOptions() {
-        GetFilterOptionsRequest getFilterOptionsRequest = new GetFilterOptionsRequest();
+    public GetFilterOptionsResponse getFilterOptions() {
+        GetFilterOptionsResponse getFilterOptionsRequest = new GetFilterOptionsResponse();
 
         getFilterOptionsRequest.setCriteriaTypes(
                 criteriaTypeRepository.findAll().stream()

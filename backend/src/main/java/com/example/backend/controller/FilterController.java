@@ -4,8 +4,8 @@ import com.example.backend.service.FilterService;
 import com.example.backend.dto.FilterDTO;
 import com.example.backend.dto.FilterCriteriaDTO;
 import com.example.backend.controller.request.CreateFilterRequest;
-import com.example.backend.controller.request.GetFilterOptionsRequest;
 import com.example.backend.controller.request.UpdateFilterRequest;
+import com.example.backend.controller.response.GetFilterOptionsResponse;
 
 import java.util.List;
 
@@ -25,26 +25,27 @@ public class FilterController {
 
     @GetMapping
     public ResponseEntity<List<FilterDTO>> getAllFilters() {
-        List<FilterDTO> filters = filterService.getAllFilters();
+        final List<FilterDTO> filters = filterService.getAllFilters();
         return ResponseEntity.ok(filters);
     }
 
     @GetMapping("/{filterId}")
     public ResponseEntity<List<FilterCriteriaDTO>> getFilterCriteria(@PathVariable Integer filterId) {
-        List<FilterCriteriaDTO> filterCriteriaDTOs = filterService.getFilterCriteria(filterId);
+        final List<FilterCriteriaDTO> filterCriteriaDTOs = filterService.getFilterCriteria(filterId);
         return ResponseEntity.ok(filterCriteriaDTOs);
     }
 
     @PutMapping("/{filterId}")
-    public ResponseEntity<FilterDTO> updateFilter(@PathVariable Integer filterId,
+    public ResponseEntity<FilterDTO> updateFilter(
+            @PathVariable Integer filterId,
             @RequestBody UpdateFilterRequest updateRequest) {
-        FilterDTO filterDTO = filterService.updateFilter(filterId, updateRequest);
+        final FilterDTO filterDTO = filterService.updateFilter(filterId, updateRequest);
         return ResponseEntity.ok(filterDTO);
     }
 
     @PostMapping
     public ResponseEntity<FilterDTO> createFilter(@RequestBody CreateFilterRequest createFilterRequest) {
-        FilterDTO filterDTO = filterService.createFilter(createFilterRequest);
+        final FilterDTO filterDTO = filterService.createFilter(createFilterRequest);
         return new ResponseEntity<>(filterDTO, HttpStatus.CREATED);
     }
 
@@ -54,9 +55,9 @@ public class FilterController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/filter-options")
-    public ResponseEntity<GetFilterOptionsRequest> getFilterOptions() {
-        GetFilterOptionsRequest filterOptions = filterService.getFilterOptions();
+    @GetMapping("/options")
+    public ResponseEntity<GetFilterOptionsResponse> getFilterOptions() {
+        GetFilterOptionsResponse filterOptions = filterService.getFilterOptions();
         return ResponseEntity.ok(filterOptions);
     }
 }
