@@ -46,7 +46,7 @@ const deleteCriteriaRow = (criteriaId) => {
 
 const saveFilter = async () => {
   const hasEmptyCriteriaValue = filterCriteria.value.some(
-    (criteria) => !criteria.criteriaValue.trim()
+    (criteria) => typeof criteria.criteriaValue !== 'string' || !criteria.criteriaValue.trim()
   )
 
   if (hasEmptyCriteriaValue) {

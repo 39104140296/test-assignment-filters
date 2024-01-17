@@ -1,10 +1,13 @@
 <script setup>
-import { onMounted } from 'vue'
+import { onMounted, computed } from 'vue'
 import { useFilterStore } from '@/store/filterStore'
 import FilterItem from '@/components/filters/FilterItem.vue'
 import FilterDetails from '@/components/filters/FilterDetails.vue'
 
 const store = useFilterStore()
+
+const isFilterDetailsOpen = computed(() => store.isFilterDetailsOpen)
+const isModalModeOn = computed(() => store.isModalModeOn)
 
 onMounted(async () => {
   await store.fetchFilters()
@@ -14,15 +17,14 @@ onMounted(async () => {
 
 <template>
   <div>
-    <FilterDetails v-if="store.isFilterDetailsOpen && !store.isModalModeOn" />
+    <FilterDetails v-if="isFilterDetailsOpen && !isModalModeOn" />
     <div class="filters">
       <FilterItem v-for="filter in store.filters" :key="filter.filterId" :filter="filter" />
     </div>
     <div class="buttons">
       <button class="add-btn" @click="store.openNewFilterDetails">+ Add Filter</button>
       <button class="mode-btn" @click="store.toggleModalMode">
-        <div v-if="store.isModalModeOn">Dialog Mode</div>
-        <div v-if="!store.isModalModeOn">Modal Mode</div>
+        {{ isModalModeOn ? 'Dialog Mode' : 'Modal Mode' }}
       </button>
     </div>
   </div>

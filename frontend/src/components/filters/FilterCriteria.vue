@@ -49,7 +49,7 @@ const days = computed(() =>
 const months = computed(() => Array.from({ length: 12 }, (_, i) => format(new Date(0, i), 'MMM')))
 const years = computed(() => {
   let currentYear = new Date().getFullYear()
-  return Array.from({ length: 20 }, (_, i) => currentYear - i)
+  return Array.from({ length: 41 }, (_, i) => currentYear - i)
 })
 
 watch([selectedDay, selectedMonth, selectedYear], () => {
@@ -98,10 +98,6 @@ const amountTypeId = computed(() => {
   return amountType ? amountType.criteriaTypeId : null
 })
 
-const handleInput = (event) => {
-  localCriteria.value.criteriaValue = event.target.value.toString()
-}
-
 onMounted(() => {
   isInitialLoad.value = false
 })
@@ -111,6 +107,20 @@ const filteredConditions = computed(() => {
     return condition.criteriaTypeId === localCriteria.value.criteriaType.criteriaTypeId
   })
 })
+
+watch(
+  () => localCriteria.value.criteriaValue,
+  (newValue, oldValue) => {
+    if (localCriteria.value.criteriaType.criteriaTypeId === amountTypeId.value) {
+      const valueStr = String(newValue)
+
+      if (valueStr && (isNaN(valueStr) || valueStr.includes('e'))) {
+        localCriteria.value.criteriaValue = oldValue
+      }
+    }
+  },
+  { deep: true }
+)
 
 watch(
   () => ({ ...localCriteria.value }),
@@ -169,7 +179,14 @@ watch(
       </div>
 
       <div class="flex-child" v-else>
-        <input :type="inputType" v-model="localCriteria.criteriaValue" @input="handleInput" />
+        <input
+          v-if="inputType == 'number'"
+          type="number"
+          min="0"
+          onkeydown="return event.keyCode !== 69"
+          v-model="localCriteria.criteriaValue"
+        />
+        <input v-if="inputType == 'text'" type="text" v-model="localCriteria.criteriaValue" />
       </div>
     </div>
     <button class="delete-btn" v-if="showDeleteButton" @click="removeCriteria">-</button>

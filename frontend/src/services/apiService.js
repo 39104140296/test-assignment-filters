@@ -38,7 +38,6 @@ export const updateFilter = async (filterId, filterData) => {
 }
 
 export const createFilter = async (newFilterData) => {
-  console.log('newFil', newFilterData)
   try {
     const response = await axiosInstance.post('', {
       filterName: newFilterData.filterName,
