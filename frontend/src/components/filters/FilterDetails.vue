@@ -45,6 +45,15 @@ const deleteCriteriaRow = (criteriaId) => {
 }
 
 const saveFilter = async () => {
+  const hasEmptyCriteriaValue = filterCriteria.value.some(
+    (criteria) => !criteria.criteriaValue.trim()
+  )
+
+  if (hasEmptyCriteriaValue) {
+    alert('Please fill in all criteria values before saving.')
+    return
+  }
+
   const criteriaData = filterCriteria.value.map((criteria) => ({
     criteriaType: {
       criteriaTypeId: criteria.criteriaType.criteriaTypeId,

@@ -84,6 +84,24 @@ const removeCriteria = () => {
   emit('delete:criteria', props.criteria.criteriaId)
 }
 
+const inputType = computed(() => {
+  if (localCriteria.value.criteriaType.criteriaTypeId === amountTypeId.value) {
+    return 'number'
+  }
+  return 'text'
+})
+
+const amountTypeId = computed(() => {
+  const amountType = filterStore.filterCriteriaOptions.criteriaTypes.find(
+    (type) => type.typeName === 'Amount'
+  )
+  return amountType ? amountType.criteriaTypeId : null
+})
+
+const handleInput = (event) => {
+  localCriteria.value.criteriaValue = event.target.value.toString()
+}
+
 onMounted(() => {
   isInitialLoad.value = false
 })
@@ -151,7 +169,7 @@ watch(
       </div>
 
       <div class="flex-child" v-else>
-        <input v-model="localCriteria.criteriaValue" />
+        <input :type="inputType" v-model="localCriteria.criteriaValue" @input="handleInput" />
       </div>
     </div>
     <button class="delete-btn" v-if="showDeleteButton" @click="removeCriteria">-</button>
