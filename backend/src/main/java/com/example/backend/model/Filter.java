@@ -30,23 +30,26 @@ public class Filter {
         return filterId;
     }
 
-    public void setFilterId(Integer filterId) {
+    public Filter setFilterId(Integer filterId) {
         this.filterId = filterId;
+        return this;
     }
 
     public String getFilterName() {
         return filterName;
     }
 
-    public void setFilterName(String filterName) {
+    public Filter setFilterName(String filterName) {
         this.filterName = filterName;
+        return this;
     }
 
     public Date getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Date createdAt) {
+    public Filter setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
+        return this;
     }
 }

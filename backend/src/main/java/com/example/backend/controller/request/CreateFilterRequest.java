@@ -11,15 +11,17 @@ public class CreateFilterRequest {
         return filterName;
     }
 
-    public void setFilterName(String filterName) {
+    public CreateFilterRequest setFilterName(String filterName) {
         this.filterName = filterName;
+        return this;
     }
 
     public List<FilterCriteriaDTO> getCriteria() {
         return criteria;
     }
 
-    public void setCriteria(List<FilterCriteriaDTO> criteria) {
+    public CreateFilterRequest setCriteria(List<FilterCriteriaDTO> criteria) {
         this.criteria = criteria;
+        return this;
     }
 }

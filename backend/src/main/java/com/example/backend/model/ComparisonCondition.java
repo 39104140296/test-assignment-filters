@@ -29,23 +29,26 @@ public class ComparisonCondition {
         return conditionId;
     }
 
-    public void setConditionId(Integer conditionId) {
+    public ComparisonCondition setConditionId(Integer conditionId) {
         this.conditionId = conditionId;
+        return this;
     }
 
     public CriteriaType getCriteriaType() {
         return criteriaType;
     }
 
-    public void setCriteriaType(CriteriaType criteriaType) {
+    public ComparisonCondition setCriteriaType(CriteriaType criteriaType) {
         this.criteriaType = criteriaType;
+        return this;
     }
 
     public String getConditionName() {
         return conditionName;
     }
 
-    public void setConditionName(String conditionName) {
+    public ComparisonCondition setConditionName(String conditionName) {
         this.conditionName = conditionName;
+        return this;
     }
 }

@@ -11,15 +11,17 @@ public class UpdateFilterRequest {
         return filterName;
     }
 
-    public void setFilterName(String filterName) {
+    public UpdateFilterRequest setFilterName(String filterName) {
         this.filterName = filterName;
+        return this;
     }
 
     public List<FilterCriteriaDTO> getFilterCriteria() {
         return filterCriteria;
     }
 
-    public void setFilterCriteria(List<FilterCriteriaDTO> filterCriteria) {
+    public UpdateFilterRequest setFilterCriteria(List<FilterCriteriaDTO> filterCriteria) {
         this.filterCriteria = filterCriteria;
+        return this;
     }
 }

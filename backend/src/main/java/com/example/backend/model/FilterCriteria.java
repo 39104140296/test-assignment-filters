@@ -40,39 +40,44 @@ public class FilterCriteria {
         return criteriaId;
     }
 
-    public void setCriteriaId(Integer criteriaId) {
+    public FilterCriteria setCriteriaId(Integer criteriaId) {
         this.criteriaId = criteriaId;
+        return this;
     }
 
     public Filter getFilter() {
         return filter;
     }
 
-    public void setFilter(Filter filter) {
+    public FilterCriteria setFilter(Filter filter) {
         this.filter = filter;
+        return this;
     }
 
     public CriteriaType getCriteriaType() {
         return criteriaType;
     }
 
-    public void setCriteriaType(CriteriaType criteriaType) {
+    public FilterCriteria setCriteriaType(CriteriaType criteriaType) {
         this.criteriaType = criteriaType;
+        return this;
     }
 
     public ComparisonCondition getComparisonCondition() {
         return comparisonCondition;
     }
 
-    public void setComparisonCondition(ComparisonCondition comparisonCondition) {
+    public FilterCriteria setComparisonCondition(ComparisonCondition comparisonCondition) {
         this.comparisonCondition = comparisonCondition;
+        return this;
     }
 
     public String getCriteriaValue() {
         return criteriaValue;
     }
 
-    public void setCriteriaValue(String criteriaValue) {
+    public FilterCriteria setCriteriaValue(String criteriaValue) {
         this.criteriaValue = criteriaValue;
+        return this;
     }
 }

@@ -25,23 +25,26 @@ public class CriteriaType {
         return criteriaTypeId;
     }
 
-    public void setCriteriaTypeId(Integer criteriaTypeId) {
+    public CriteriaType setCriteriaTypeId(Integer criteriaTypeId) {
         this.criteriaTypeId = criteriaTypeId;
+        return this;
     }
 
     public String getTypeName() {
         return typeName;
     }
 
-    public void setTypeName(String typeName) {
+    public CriteriaType setTypeName(String typeName) {
         this.typeName = typeName;
+        return this;
     }
 
     public String getDataType() {
         return dataType;
     }
 
-    public void setDataType(String dataType) {
+    public CriteriaType setDataType(String dataType) {
         this.dataType = dataType;
+        return this;
     }
 }
