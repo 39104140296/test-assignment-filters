@@ -71,7 +71,13 @@ const days = computed(() =>
 const months = computed(() => Array.from({ length: 12 }, (_, i) => format(new Date(0, i), 'MMM')))
 const years = computed(() => {
   let currentYear = new Date().getFullYear()
-  return Array.from({ length: 41 }, (_, i) => currentYear - i)
+  const yearsBefore = 25
+  const yearsAfter = 25
+
+  return Array.from(
+    { length: yearsBefore + yearsAfter + 1 },
+    (_, i) => currentYear - yearsBefore + i
+  )
 })
 
 watch([selectedDay, selectedMonth, selectedYear], () => {
