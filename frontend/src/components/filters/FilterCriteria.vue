@@ -24,11 +24,31 @@ const isDateType = computed(
   () => localCriteria.value.criteriaType.criteriaTypeId === dateTypeId.value
 )
 
+const inputType = computed(() => {
+  if (localCriteria.value.criteriaType.criteriaTypeId === amountTypeId.value) {
+    return 'number'
+  }
+  return 'text'
+})
+
+const amountTypeId = computed(() => {
+  const amountType = filterStore.filterCriteriaOptions.criteriaTypes.find(
+    (type) => type.typeName === 'Amount'
+  )
+  return amountType ? amountType.criteriaTypeId : null
+})
+
 const dateTypeId = computed(() => {
   const dateType = filterStore.filterCriteriaOptions.criteriaTypes.find(
     (type) => type.typeName === 'Date'
   )
   return dateType ? dateType.criteriaTypeId : null
+})
+
+const filteredConditions = computed(() => {
+  return filterStore.filterCriteriaOptions.comparisonConditions.filter((condition) => {
+    return condition.criteriaTypeId === localCriteria.value.criteriaType.criteriaTypeId
+  })
 })
 
 const initialDate =
@@ -62,6 +82,18 @@ watch([selectedDay, selectedMonth, selectedYear], () => {
   }
 })
 
+onMounted(() => {
+  isInitialLoad.value = false
+})
+
+watch(
+  () => ({ ...localCriteria.value }),
+  (newVal) => {
+    emit('update:criteria', newVal)
+  },
+  { deep: true }
+)
+
 const onCriteriaTypeChange = () => {
   if (filteredConditions.value.length > 0) {
     localCriteria.value.comparisonCondition.conditionId = filteredConditions.value[0].conditionId
@@ -83,52 +115,6 @@ const onCriteriaTypeChange = () => {
 const removeCriteria = () => {
   emit('delete:criteria', props.criteria.criteriaId)
 }
-
-const inputType = computed(() => {
-  if (localCriteria.value.criteriaType.criteriaTypeId === amountTypeId.value) {
-    return 'number'
-  }
-  return 'text'
-})
-
-const amountTypeId = computed(() => {
-  const amountType = filterStore.filterCriteriaOptions.criteriaTypes.find(
-    (type) => type.typeName === 'Amount'
-  )
-  return amountType ? amountType.criteriaTypeId : null
-})
-
-onMounted(() => {
-  isInitialLoad.value = false
-})
-
-const filteredConditions = computed(() => {
-  return filterStore.filterCriteriaOptions.comparisonConditions.filter((condition) => {
-    return condition.criteriaTypeId === localCriteria.value.criteriaType.criteriaTypeId
-  })
-})
-
-watch(
-  () => localCriteria.value.criteriaValue,
-  (newValue, oldValue) => {
-    if (localCriteria.value.criteriaType.criteriaTypeId === amountTypeId.value) {
-      const valueStr = String(newValue)
-
-      if (valueStr && (isNaN(valueStr) || valueStr.includes('e'))) {
-        localCriteria.value.criteriaValue = oldValue
-      }
-    }
-  },
-  { deep: true }
-)
-
-watch(
-  () => ({ ...localCriteria.value }),
-  (newVal) => {
-    emit('update:criteria', newVal)
-  },
-  { deep: true }
-)
 </script>
 
 <template>

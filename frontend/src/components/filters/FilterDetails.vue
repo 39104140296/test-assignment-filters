@@ -5,10 +5,8 @@ import FilterCriteria from '@/components/filters/FilterCriteria.vue'
 import { updateFilter, createFilter, deleteFilter } from '@/services/apiService'
 
 const store = useFilterStore()
-
 const filterName = ref(store.isNew ? 'New Filter' : store.filterDetails?.filterName || '')
 const originalFilterName = ref(store.isNew ? '' : store.filterDetails?.filterName || '')
-
 const filterCriteria = ref([])
 const defaultCriteria = computed(() => {
   return {
@@ -16,6 +14,54 @@ const defaultCriteria = computed(() => {
     criteriaType: store.filterCriteriaOptions.criteriaTypes[0]
   }
 })
+
+watch(
+  () => store.filterDetails.filterId,
+  (newFilterId, oldFilterId) => {
+    if (newFilterId !== oldFilterId) {
+      loadFilterCriteria()
+    }
+  }
+)
+
+watch(
+  () => store.filterDetails?.filterName,
+  (newName) => {
+    if (!store.isNew) {
+      filterName.value = newName
+      originalFilterName.value = newName
+    }
+  }
+)
+
+watch(
+  () => store.filterDetails,
+  (newDetails) => {
+    if (!store.isNew && newDetails) {
+      filterName.value = newDetails.filterName
+      originalFilterName.value = newDetails.filterName
+      filterCriteria.value = [...store.filterCriteria]
+    }
+  },
+  { immediate: true, deep: true }
+)
+
+const loadFilterCriteria = async () => {
+  if (!store.isNew) {
+    await store.fetchFilterCriteria()
+    filterCriteria.value = [...store.filterCriteria]
+  } else {
+    filterCriteria.value = []
+    addCriteriaRow()
+  }
+}
+
+const handleCriteriaUpdate = (updatedCriteria) => {
+  const index = filterCriteria.value.findIndex((c) => c.criteriaId === updatedCriteria.criteriaId)
+  if (index !== -1) {
+    filterCriteria.value.splice(index, 1, updatedCriteria)
+  }
+}
 
 const addCriteriaRow = () => {
   const newCriteria = { ...defaultCriteria.value, criteriaId: Date.now().toString() }
@@ -26,28 +72,20 @@ if (store.isNew) {
   addCriteriaRow()
 }
 
-const closeModal = () => {
-  if (store.isNew) {
-    store.setIsNewToFalse()
-  }
-  store.closeFilterDetails()
-}
-
-const handleCriteriaUpdate = (updatedCriteria) => {
-  const index = filterCriteria.value.findIndex((c) => c.criteriaId === updatedCriteria.criteriaId)
-  if (index !== -1) {
-    filterCriteria.value.splice(index, 1, updatedCriteria)
-  }
-}
-
 const deleteCriteriaRow = (criteriaId) => {
   filterCriteria.value = filterCriteria.value.filter((c) => c.criteriaId !== criteriaId)
 }
 
 const saveFilter = async () => {
-  const hasEmptyCriteriaValue = filterCriteria.value.some(
-    (criteria) => typeof criteria.criteriaValue !== 'string' || !criteria.criteriaValue.trim()
-  )
+  const hasEmptyCriteriaValue = filterCriteria.value.some((criteria) => {
+    if (typeof criteria.criteriaValue === 'number') {
+      return isNaN(criteria.criteriaValue)
+    } else if (typeof criteria.criteriaValue === 'string') {
+      return criteria.criteriaValue.trim() === ''
+    } else {
+      return true
+    }
+  })
 
   if (hasEmptyCriteriaValue) {
     alert('Please fill in all criteria values before saving.')
@@ -63,7 +101,7 @@ const saveFilter = async () => {
       conditionId: criteria.comparisonCondition.conditionId,
       conditionName: criteria.comparisonCondition.conditionName
     },
-    criteriaValue: criteria.criteriaValue
+    criteriaValue: String(criteria.criteriaValue).trim().replace(/\s+/g, ' ')
   }))
 
   const newFilterData = {
@@ -87,85 +125,20 @@ const deleteFilterAndCriteria = async () => {
   closeModal()
 }
 
-const loadFilterCriteria = async () => {
-  if (!store.isNew) {
-    await store.fetchFilterCriteria()
-    filterCriteria.value = [...store.filterCriteria]
-  } else {
-    filterCriteria.value = []
-    addCriteriaRow()
+const closeModal = () => {
+  if (store.isNew) {
+    store.setIsNewToFalse()
   }
+  store.closeFilterDetails()
 }
-
-watch(
-  () => store.filterDetails,
-  (newDetails) => {
-    if (!store.isNew && newDetails) {
-      filterName.value = newDetails.filterName
-      originalFilterName.value = newDetails.filterName
-      filterCriteria.value = [...store.filterCriteria]
-    }
-  },
-  { immediate: true, deep: true }
-)
-
-watch(
-  () => store.filterDetails?.filterName,
-  (newName) => {
-    if (!store.isNew) {
-      filterName.value = newName
-      originalFilterName.value = newName
-    }
-  }
-)
-
-watch(
-  () => store.filterDetails.filterId,
-  (newFilterId, oldFilterId) => {
-    if (newFilterId !== oldFilterId) {
-      loadFilterCriteria()
-    }
-  }
-)
 </script>
 
 <template>
-  <div>
-    <div v-if="store.isModalModeOn" class="modal-overlay" @click.self="closeModal">
-      <div class="modal">
-        <div class="filter-header">
-          <h3>{{ filterName }}</h3>
-          <button class="close-button" @click="closeModal">&times;</button>
-        </div>
-        <div class="filter-body">
-          <div class="filter-name">
-            <h4>Filter name</h4>
-            <input v-model="filterName" class="filter-name-input" />
-          </div>
-          <div class="criteria-box">
-            <h4>Criteria</h4>
-            <div class="criteria-container">
-              <FilterCriteria
-                v-for="criteria in filterCriteria"
-                :key="criteria.criteriaId"
-                :criteria="criteria"
-                :showDeleteButton="filterCriteria.length > 1"
-                @update:criteria="handleCriteriaUpdate"
-                @delete:criteria="deleteCriteriaRow"
-              />
-            </div>
-          </div>
-          <button class="add-row-btn" @click="addCriteriaRow">+ Add Row</button>
-        </div>
-        <div class="filter-footer">
-          <button class="save-btn" @click="saveFilter">Save</button>
-          <button v-if="!store.isNew" class="delete-btn" @click="deleteFilterAndCriteria">
-            Delete
-          </button>
-        </div>
-      </div>
-    </div>
-    <div v-if="!store.isModalModeOn" class="dialog">
+  <div
+    :class="{ 'modal-overlay': store.isModalModeOn }"
+    @click.self="store.isModalModeOn ? closeModal() : null"
+  >
+    <div :class="{ modal: store.isModalModeOn, dialog: !store.isModalModeOn }">
       <div class="filter-header">
         <h3>{{ filterName }}</h3>
         <button class="close-button" @click="closeModal">&times;</button>
