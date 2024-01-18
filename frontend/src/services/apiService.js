@@ -1,7 +1,10 @@
 import axios from 'axios'
 
 const axiosInstance = axios.create({
-  baseURL: 'http://localhost:8080/api/filters'
+  baseURL: 'http://localhost:8080/api/filters',
+  headers: {
+    Authorization: 'Basic YWRtaW46c3VwZXJzZWN1cmVwYXNzd29yZA=='
+  }
 })
 
 export const getAllFilters = async () => {
