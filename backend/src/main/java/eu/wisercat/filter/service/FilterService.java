@@ -32,9 +32,9 @@ public class FilterService {
     private final ComparisonConditionRepository comparisonConditionRepository;
 
     public FilterService(UserDetailsService userDetailsService,
-                         FilterRepository filterRepository,
-                         FilterCriteriaRepository filterCriteriaRepository,
-                         ComparisonConditionRepository comparisonConditionRepository) {
+            FilterRepository filterRepository,
+            FilterCriteriaRepository filterCriteriaRepository,
+            ComparisonConditionRepository comparisonConditionRepository) {
         this.userDetailsService = userDetailsService;
         this.filterRepository = filterRepository;
         this.filterCriteriaRepository = filterCriteriaRepository;
@@ -133,8 +133,13 @@ public class FilterService {
     public GetFilterOptionsResponse getFilterOptions() {
         final List<ComparisonCondition> comparisonConditions = comparisonConditionRepository.findAll();
         return new GetFilterOptionsResponse(
-                comparisonConditions.stream().map(cc -> new CriteriaTypeDTO(cc.getCriteriaType())).toList(),
-                comparisonConditions.stream().map(ComparisonConditionDTO::new).toList()
-        );
+                comparisonConditions.stream()
+                        .map(cc -> new CriteriaTypeDTO(cc.getCriteriaType()))
+                        .distinct()
+                        .toList(),
+                comparisonConditions.stream()
+                        .map(ComparisonConditionDTO::new)
+                        .toList());
+
     }
 }
