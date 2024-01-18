@@ -27,7 +27,6 @@ watch(
 watch(
   () => store.filterDetails,
   (newDetails) => {
-    console.log('new', newDetails)
     if (!store.isNew && newDetails) {
       filterName.value = newDetails.filterName
       originalFilterName.value = newDetails.filterName
