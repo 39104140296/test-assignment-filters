@@ -12,6 +12,7 @@ import eu.wisercat.filter.model.Filter;
 import eu.wisercat.filter.model.FilterCriteria;
 import eu.wisercat.filter.model.User;
 import eu.wisercat.filter.repository.ComparisonConditionRepository;
+import eu.wisercat.filter.repository.CriteriaTypeRepository;
 import eu.wisercat.filter.repository.FilterCriteriaRepository;
 import eu.wisercat.filter.repository.FilterRepository;
 import eu.wisercat.filter.security.UserDetailsService;
@@ -30,15 +31,18 @@ public class FilterService {
     private final FilterRepository filterRepository;
     private final FilterCriteriaRepository filterCriteriaRepository;
     private final ComparisonConditionRepository comparisonConditionRepository;
+    private final CriteriaTypeRepository criteriaTypeRepository;
 
     public FilterService(UserDetailsService userDetailsService,
             FilterRepository filterRepository,
             FilterCriteriaRepository filterCriteriaRepository,
-            ComparisonConditionRepository comparisonConditionRepository) {
+            ComparisonConditionRepository comparisonConditionRepository,
+            CriteriaTypeRepository criteriaTypeRepository) {
         this.userDetailsService = userDetailsService;
         this.filterRepository = filterRepository;
         this.filterCriteriaRepository = filterCriteriaRepository;
         this.comparisonConditionRepository = comparisonConditionRepository;
+        this.criteriaTypeRepository = criteriaTypeRepository;
     }
 
     public List<FilterDTO> getAllFilters() {
@@ -131,15 +135,13 @@ public class FilterService {
     }
 
     public GetFilterOptionsResponse getFilterOptions() {
-        final List<ComparisonCondition> comparisonConditions = comparisonConditionRepository.findAll();
-        return new GetFilterOptionsResponse(
-                comparisonConditions.stream()
-                        .map(cc -> new CriteriaTypeDTO(cc.getCriteriaType()))
-                        .distinct()
-                        .toList(),
-                comparisonConditions.stream()
-                        .map(ComparisonConditionDTO::new)
-                        .toList());
+        final List<CriteriaTypeDTO> criteriaTypes = criteriaTypeRepository.findAll().stream()
+                .map(CriteriaTypeDTO::new)
+                .toList();
+        final List<ComparisonConditionDTO> comparisonConditions = comparisonConditionRepository.findAll().stream()
+                .map(ComparisonConditionDTO::new)
+                .toList();
 
+        return new GetFilterOptionsResponse(criteriaTypes, comparisonConditions);
     }
 }

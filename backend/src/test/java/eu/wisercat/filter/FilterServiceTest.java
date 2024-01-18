@@ -263,6 +263,7 @@ public class FilterServiceTest {
     @Test
     public void getFilterOptions() {
         // given
+        when(criteriaTypeRepository.findAll()).thenReturn(List.of(criteriaType));
         when(comparisonConditionRepository.findAll()).thenReturn(List.of(comparisonCondition));
         final GetFilterOptionsResponse expected = new GetFilterOptionsResponse()
                 .setCriteriaTypes(List.of(new CriteriaTypeDTO(criteriaType)))
