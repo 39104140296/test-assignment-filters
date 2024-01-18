@@ -1,11 +1,11 @@
 package eu.wisercat.filter.controller.request;
 
+import eu.wisercat.filter.dto.FilterCriteriaDTO;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
+
 import java.util.List;
 import java.util.Objects;
-
-import eu.wisercat.filter.dto.FilterCriteriaDTO;
 
 public class UpdateFilterRequest {
 
@@ -41,7 +41,7 @@ public class UpdateFilterRequest {
             return false;
         UpdateFilterRequest that = (UpdateFilterRequest) o;
         return Objects.equals(filterName, that.filterName) &&
-                Objects.equals(filterCriteria, that.filterCriteria);
+            Objects.equals(filterCriteria, that.filterCriteria);
     }
 
     @Override

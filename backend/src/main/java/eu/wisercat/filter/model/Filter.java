@@ -11,6 +11,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
+
 import java.util.Date;
 
 @Entity
@@ -45,8 +46,8 @@ public class Filter {
         return name;
     }
 
-    public Filter setName(String filterName) {
-        this.name = filterName;
+    public Filter setName(String name) {
+        this.name = name;
         return this;
     }
 

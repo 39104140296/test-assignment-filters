@@ -15,7 +15,7 @@ The Filter Management Application enables the creation, editing, deletion, and v
    ```
    git clone https://github.com/39104140296/test-assignment-filters.git
    ```
-1. **Backend Setup**
+2. **Backend Setup**
    
    Navigate to the backend directory and run:
    ```
@@ -24,7 +24,7 @@ The Filter Management Application enables the creation, editing, deletion, and v
 
    This will start the backend server on http://localhost:8080/
 
-2. **Frontend Setup**
+3. **Frontend Setup**
 
    In the frontend directory, install the dependencies:
    ```

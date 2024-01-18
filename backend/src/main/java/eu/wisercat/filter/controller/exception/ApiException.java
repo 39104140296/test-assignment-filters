@@ -1,6 +1,7 @@
 package eu.wisercat.filter.controller.exception;
 
 public class ApiException {
+
     private String error;
 
     public ApiException(String error) {

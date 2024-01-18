@@ -24,20 +24,18 @@ public class ControllerExceptionHandler {
         }
     }
 
-    protected ResponseEntity<ApiException> handleEntityNotFoundException(
-            EntityNotFoundException ex,
-            HttpHeaders headers,
-            HttpStatus status,
-            WebRequest request) {
+    protected ResponseEntity<ApiException> handleEntityNotFoundException(EntityNotFoundException ex,
+                                                                         HttpHeaders headers,
+                                                                         HttpStatus status,
+                                                                         WebRequest request) {
         return handleInternalException(ex, new ApiException(ex.getMessage()), headers, status, request);
     }
 
-    protected ResponseEntity<ApiException> handleInternalException(
-            Exception ex,
-            ApiException body,
-            HttpHeaders headers,
-            HttpStatus status,
-            WebRequest request) {
+    protected ResponseEntity<ApiException> handleInternalException(Exception ex,
+                                                                   ApiException body,
+                                                                   HttpHeaders headers,
+                                                                   HttpStatus status,
+                                                                   WebRequest request) {
         if (HttpStatus.INTERNAL_SERVER_ERROR.equals(status)) {
             request.setAttribute(WebUtils.ERROR_EXCEPTION_ATTRIBUTE, ex, WebRequest.SCOPE_REQUEST);
         }

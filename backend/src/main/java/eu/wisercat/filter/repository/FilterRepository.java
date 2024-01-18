@@ -1,10 +1,10 @@
 package eu.wisercat.filter.repository;
 
-import java.util.List;
+import eu.wisercat.filter.model.Filter;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import eu.wisercat.filter.model.Filter;
+import java.util.List;
 
 @Repository
 public interface FilterRepository extends JpaRepository<Filter, Integer> {

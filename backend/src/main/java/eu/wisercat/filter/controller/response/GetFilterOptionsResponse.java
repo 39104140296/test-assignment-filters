@@ -1,9 +1,9 @@
 package eu.wisercat.filter.controller.response;
 
-import java.util.List;
-
 import eu.wisercat.filter.dto.ComparisonConditionDTO;
 import eu.wisercat.filter.dto.CriteriaTypeDTO;
+
+import java.util.List;
 
 public class GetFilterOptionsResponse {
 
@@ -14,7 +14,7 @@ public class GetFilterOptionsResponse {
     }
 
     public GetFilterOptionsResponse(List<CriteriaTypeDTO> criteriaTypes,
-            List<ComparisonConditionDTO> comparisonConditions) {
+                                    List<ComparisonConditionDTO> comparisonConditions) {
         this.criteriaTypes = criteriaTypes;
         this.comparisonConditions = comparisonConditions;
     }

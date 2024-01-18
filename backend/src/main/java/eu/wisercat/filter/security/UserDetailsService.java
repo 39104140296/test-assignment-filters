@@ -1,13 +1,12 @@
 package eu.wisercat.filter.security;
 
+import eu.wisercat.filter.model.User;
+import eu.wisercat.filter.repository.UserRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-
-import eu.wisercat.filter.model.User;
-import eu.wisercat.filter.repository.UserRepository;
 
 @Service
 public class UserDetailsService implements org.springframework.security.core.userdetails.UserDetailsService {
@@ -25,10 +24,10 @@ public class UserDetailsService implements org.springframework.security.core.use
             throw new UsernameNotFoundException("User with username: " + username + " not found");
         }
         return org.springframework.security.core.userdetails.User.builder()
-                .username(user.getUsername())
-                .password(user.getPassword())
-                .roles(user.getRole())
-                .build();
+            .username(user.getUsername())
+            .password(user.getPassword())
+            .roles(user.getRole())
+            .build();
     }
 
     public User getLoggedInUser() {

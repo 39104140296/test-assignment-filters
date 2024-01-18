@@ -1,7 +1,6 @@
 package eu.wisercat.filter.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import eu.wisercat.filter.model.ComparisonCondition;
 
 import java.util.Objects;
@@ -60,7 +59,7 @@ public class ComparisonConditionDTO {
             return false;
         ComparisonConditionDTO that = (ComparisonConditionDTO) o;
         return Objects.equals(id, that.id) && Objects.equals(criteriaTypeId, that.criteriaTypeId)
-                && Objects.equals(name, that.name);
+            && Objects.equals(name, that.name);
     }
 
     @Override

@@ -1,9 +1,5 @@
 package eu.wisercat.filter.service;
 
-import jakarta.persistence.EntityNotFoundException;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import eu.wisercat.filter.controller.request.CreateFilterRequest;
 import eu.wisercat.filter.controller.request.UpdateFilterRequest;
 import eu.wisercat.filter.controller.response.GetFilterOptionsResponse;
@@ -16,10 +12,12 @@ import eu.wisercat.filter.model.Filter;
 import eu.wisercat.filter.model.FilterCriteria;
 import eu.wisercat.filter.model.User;
 import eu.wisercat.filter.repository.ComparisonConditionRepository;
-import eu.wisercat.filter.repository.CriteriaTypeRepository;
 import eu.wisercat.filter.repository.FilterCriteriaRepository;
 import eu.wisercat.filter.repository.FilterRepository;
 import eu.wisercat.filter.security.UserDetailsService;
+import jakarta.persistence.EntityNotFoundException;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -32,18 +30,15 @@ public class FilterService {
     private final FilterRepository filterRepository;
     private final FilterCriteriaRepository filterCriteriaRepository;
     private final ComparisonConditionRepository comparisonConditionRepository;
-    private final CriteriaTypeRepository criteriaTypeRepository;
 
     public FilterService(UserDetailsService userDetailsService,
-            FilterRepository filterRepository,
-            FilterCriteriaRepository filterCriteriaRepository,
-            ComparisonConditionRepository comparisonConditionRepository,
-            CriteriaTypeRepository criteriaTypeRepository) {
+                         FilterRepository filterRepository,
+                         FilterCriteriaRepository filterCriteriaRepository,
+                         ComparisonConditionRepository comparisonConditionRepository) {
         this.userDetailsService = userDetailsService;
         this.filterRepository = filterRepository;
         this.filterCriteriaRepository = filterCriteriaRepository;
         this.comparisonConditionRepository = comparisonConditionRepository;
-        this.criteriaTypeRepository = criteriaTypeRepository;
     }
 
     public List<FilterDTO> getAllFilters() {
@@ -110,8 +105,7 @@ public class FilterService {
         for (FilterCriteriaDTO criteriaDTO : request.getCriteria()) {
             final Integer conditionId = criteriaDTO.getComparisonCondition().getId();
             final ComparisonCondition comparisonCondition = comparisonConditionRepository.findById(conditionId)
-                    .orElseThrow(
-                            () -> new EntityNotFoundException("ComparisonCondition not found with id: " + conditionId));
+                    .orElseThrow(() -> new EntityNotFoundException("Condition not found with id: " + conditionId));
 
             final FilterCriteria filterCriteria = new FilterCriteria()
                     .setUser(user)
@@ -137,13 +131,10 @@ public class FilterService {
     }
 
     public GetFilterOptionsResponse getFilterOptions() {
-        final List<CriteriaTypeDTO> criteriaTypes = criteriaTypeRepository.findAll().stream()
-                .map(CriteriaTypeDTO::new)
-                .toList();
-        final List<ComparisonConditionDTO> comparisonConditions = comparisonConditionRepository.findAll().stream()
-                .map(ComparisonConditionDTO::new)
-                .toList();
-
-        return new GetFilterOptionsResponse(criteriaTypes, comparisonConditions);
+        final List<ComparisonCondition> comparisonConditions = comparisonConditionRepository.findAll();
+        return new GetFilterOptionsResponse(
+                comparisonConditions.stream().map(cc -> new CriteriaTypeDTO(cc.getCriteriaType())).toList(),
+                comparisonConditions.stream().map(ComparisonConditionDTO::new).toList()
+        );
     }
 }

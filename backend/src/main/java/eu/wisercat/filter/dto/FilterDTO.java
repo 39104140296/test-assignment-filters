@@ -1,7 +1,6 @@
 package eu.wisercat.filter.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import eu.wisercat.filter.model.Filter;
 
 public class FilterDTO {

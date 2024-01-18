@@ -1,10 +1,10 @@
 package eu.wisercat.filter.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import eu.wisercat.filter.model.FilterCriteria;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+
 import java.util.Objects;
 
 public class FilterCriteriaDTO {
@@ -75,9 +75,9 @@ public class FilterCriteriaDTO {
             return false;
         FilterCriteriaDTO that = (FilterCriteriaDTO) o;
         return Objects.equals(id, that.id)
-                && Objects.equals(criteriaType, that.criteriaType)
-                && Objects.equals(comparisonCondition, that.comparisonCondition)
-                && Objects.equals(criteriaValue, that.criteriaValue);
+            && Objects.equals(criteriaType, that.criteriaType)
+            && Objects.equals(comparisonCondition, that.comparisonCondition)
+            && Objects.equals(criteriaValue, that.criteriaValue);
     }
 
     @Override

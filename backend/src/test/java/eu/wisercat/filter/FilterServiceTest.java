@@ -1,13 +1,5 @@
 package eu.wisercat.filter;
 
-import jakarta.persistence.EntityNotFoundException;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
 import eu.wisercat.filter.controller.request.CreateFilterRequest;
 import eu.wisercat.filter.controller.request.UpdateFilterRequest;
 import eu.wisercat.filter.controller.response.GetFilterOptionsResponse;
@@ -15,17 +7,20 @@ import eu.wisercat.filter.dto.ComparisonConditionDTO;
 import eu.wisercat.filter.dto.CriteriaTypeDTO;
 import eu.wisercat.filter.dto.FilterCriteriaDTO;
 import eu.wisercat.filter.dto.FilterDTO;
-import eu.wisercat.filter.model.ComparisonCondition;
-import eu.wisercat.filter.model.CriteriaType;
-import eu.wisercat.filter.model.Filter;
-import eu.wisercat.filter.model.FilterCriteria;
-import eu.wisercat.filter.model.User;
+import eu.wisercat.filter.model.*;
 import eu.wisercat.filter.repository.ComparisonConditionRepository;
 import eu.wisercat.filter.repository.CriteriaTypeRepository;
 import eu.wisercat.filter.repository.FilterCriteriaRepository;
 import eu.wisercat.filter.repository.FilterRepository;
 import eu.wisercat.filter.security.UserDetailsService;
 import eu.wisercat.filter.service.FilterService;
+import jakarta.persistence.EntityNotFoundException;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import java.util.Date;
 import java.util.List;
@@ -268,7 +263,6 @@ public class FilterServiceTest {
     @Test
     public void getFilterOptions() {
         // given
-        when(criteriaTypeRepository.findAll()).thenReturn(List.of(criteriaType));
         when(comparisonConditionRepository.findAll()).thenReturn(List.of(comparisonCondition));
         final GetFilterOptionsResponse expected = new GetFilterOptionsResponse()
                 .setCriteriaTypes(List.of(new CriteriaTypeDTO(criteriaType)))
