@@ -51,6 +51,8 @@ const filteredConditions = computed(() => {
   })
 })
 
+const maxNumberValue = ref(100000)
+
 const initialDate =
   isDateType.value && localCriteria.value.criteriaValue
     ? parseISO(localCriteria.value.criteriaValue)
@@ -115,6 +117,12 @@ const onCriteriaTypeChange = () => {
 const removeCriteria = () => {
   emit('delete:criteria', props.criteria.criteriaId)
 }
+
+const enforceMaxValue = () => {
+  if (localCriteria.value.criteriaValue > maxNumberValue.value) {
+    localCriteria.value.criteriaValue = maxNumberValue.value
+  }
+}
 </script>
 
 <template>
@@ -169,6 +177,8 @@ const removeCriteria = () => {
           v-if="inputType == 'number'"
           type="number"
           min="0"
+          :max="maxNumberValue"
+          @input="enforceMaxValue"
           onkeydown="return event.keyCode !== 69"
           v-model="localCriteria.criteriaValue"
         />
