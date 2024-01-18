@@ -1,28 +1,41 @@
 package com.example.backend.dto;
 
+import com.example.backend.model.FilterCriteria;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import java.util.Objects;
+
 public class FilterCriteriaDTO {
 
-    private Integer criteriaId;
-    private Integer filterId;
+    @JsonProperty("criteriaId")
+    private Integer id;
+
+    @NotNull
     private CriteriaTypeDTO criteriaType;
+
+    @NotNull
     private ComparisonConditionDTO comparisonCondition;
+
+    @NotEmpty
     private String criteriaValue;
 
-    public Integer getCriteriaId() {
-        return criteriaId;
+    public FilterCriteriaDTO() {
     }
 
-    public FilterCriteriaDTO setCriteriaId(Integer criteriaId) {
-        this.criteriaId = criteriaId;
-        return this;
+    public FilterCriteriaDTO(FilterCriteria filterCriteria) {
+        this.id = filterCriteria.getId();
+        this.criteriaValue = filterCriteria.getValue();
+        this.criteriaType = new CriteriaTypeDTO(filterCriteria.getCriteriaType());
+        this.comparisonCondition = new ComparisonConditionDTO(filterCriteria.getComparisonCondition());
     }
 
-    public Integer getFilterId() {
-        return filterId;
+    public Integer getId() {
+        return id;
     }
 
-    public FilterCriteriaDTO setFilterId(Integer filterId) {
-        this.filterId = filterId;
+    public FilterCriteriaDTO setId(Integer id) {
+        this.id = id;
         return this;
     }
 
@@ -51,5 +64,23 @@ public class FilterCriteriaDTO {
     public FilterCriteriaDTO setCriteriaValue(String criteriaValue) {
         this.criteriaValue = criteriaValue;
         return this;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        FilterCriteriaDTO that = (FilterCriteriaDTO) o;
+        return Objects.equals(id, that.id)
+                && Objects.equals(criteriaType, that.criteriaType)
+                && Objects.equals(comparisonCondition, that.comparisonCondition)
+                && Objects.equals(criteriaValue, that.criteriaValue);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, criteriaType, comparisonCondition, criteriaValue);
     }
 }

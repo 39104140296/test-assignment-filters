@@ -1,7 +1,6 @@
 package com.example.backend.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -18,7 +17,7 @@ public class FilterCriteria {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer criteriaId;
+    private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "filter_id")
@@ -34,14 +33,14 @@ public class FilterCriteria {
     private ComparisonCondition comparisonCondition;
 
     @Column(name = "criteria_value", nullable = false)
-    private String criteriaValue;
+    private String value;
 
-    public Integer getCriteriaId() {
-        return criteriaId;
+    public Integer getId() {
+        return id;
     }
 
-    public FilterCriteria setCriteriaId(Integer criteriaId) {
-        this.criteriaId = criteriaId;
+    public FilterCriteria setId(Integer id) {
+        this.id = id;
         return this;
     }
 
@@ -72,12 +71,12 @@ public class FilterCriteria {
         return this;
     }
 
-    public String getCriteriaValue() {
-        return criteriaValue;
+    public String getValue() {
+        return value;
     }
 
-    public FilterCriteria setCriteriaValue(String criteriaValue) {
-        this.criteriaValue = criteriaValue;
+    public FilterCriteria setValue(String criteriaValue) {
+        this.value = criteriaValue;
         return this;
     }
 }

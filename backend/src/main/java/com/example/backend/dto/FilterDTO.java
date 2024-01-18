@@ -1,25 +1,36 @@
 package com.example.backend.dto;
 
+import com.example.backend.model.Filter;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class FilterDTO {
 
-    private int filterId;
-    private String filterName;
+    @JsonProperty("filterId")
+    private Integer id;
 
-    public int getFilterId() {
-        return filterId;
+    @JsonProperty("filterName")
+    private String name;
+
+    public FilterDTO(Filter filter) {
+        this.id = filter.getId();
+        this.name = filter.getName();
     }
 
-    public FilterDTO setFilterId(int filterId) {
-        this.filterId = filterId;
+    public int getId() {
+        return id;
+    }
+
+    public FilterDTO setId(Integer id) {
+        this.id = id;
         return this;
     }
 
-    public String getFilterName() {
-        return filterName;
+    public String getName() {
+        return name;
     }
 
-    public FilterDTO setFilterName(String filterName) {
-        this.filterName = filterName;
+    public FilterDTO setName(String name) {
+        this.name = name;
         return this;
     }
 }

@@ -1,20 +1,34 @@
 package com.example.backend.dto;
 
+import com.example.backend.model.ComparisonCondition;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.Objects;
+
 public class ComparisonConditionDTO {
 
-    private Integer conditionId;
+    @JsonProperty("conditionId")
+    private Integer id;
+
     private Integer criteriaTypeId;
-    private String conditionName;
+
+    @JsonProperty("conditionName")
+    private String name;
 
     public ComparisonConditionDTO() {
     }
 
-    public Integer getConditionId() {
-        return conditionId;
+    public ComparisonConditionDTO(ComparisonCondition comparisonCondition) {
+        this.id = comparisonCondition.getId();
+        this.name = comparisonCondition.getName();
+        this.criteriaTypeId = comparisonCondition.getCriteriaType().getId();
     }
 
-    public ComparisonConditionDTO setConditionId(Integer conditionId) {
-        this.conditionId = conditionId;
+    public Integer getId() {
+        return id;
+    }
+
+    public ComparisonConditionDTO setId(Integer id) {
+        this.id = id;
         return this;
     }
 
@@ -27,12 +41,28 @@ public class ComparisonConditionDTO {
         return this;
     }
 
-    public String getConditionName() {
-        return conditionName;
+    public String getName() {
+        return name;
     }
 
-    public ComparisonConditionDTO setConditionName(String conditionName) {
-        this.conditionName = conditionName;
+    public ComparisonConditionDTO setName(String name) {
+        this.name = name;
         return this;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        ComparisonConditionDTO that = (ComparisonConditionDTO) o;
+        return Objects.equals(id, that.id) && Objects.equals(criteriaTypeId, that.criteriaTypeId)
+                && Objects.equals(name, that.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, criteriaTypeId, name);
     }
 }

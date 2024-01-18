@@ -1,29 +1,24 @@
 package com.example.backend.service;
 
-import com.example.backend.repository.FilterCriteriaRepository;
-import com.example.backend.repository.FilterRepository;
-import com.example.backend.repository.ComparisonConditionRepository;
-import com.example.backend.repository.CriteriaTypeRepository;
-
-import jakarta.persistence.EntityNotFoundException;
-
-import com.example.backend.dto.CriteriaTypeDTO;
 import com.example.backend.controller.request.CreateFilterRequest;
 import com.example.backend.controller.request.UpdateFilterRequest;
 import com.example.backend.controller.response.GetFilterOptionsResponse;
 import com.example.backend.dto.ComparisonConditionDTO;
-import com.example.backend.dto.FilterDTO;
+import com.example.backend.dto.CriteriaTypeDTO;
 import com.example.backend.dto.FilterCriteriaDTO;
-import com.example.backend.service.FilterService;
+import com.example.backend.dto.FilterDTO;
 import com.example.backend.model.ComparisonCondition;
 import com.example.backend.model.CriteriaType;
 import com.example.backend.model.Filter;
 import com.example.backend.model.FilterCriteria;
-
+import com.example.backend.repository.ComparisonConditionRepository;
+import com.example.backend.repository.CriteriaTypeRepository;
+import com.example.backend.repository.FilterCriteriaRepository;
+import com.example.backend.repository.FilterRepository;
+import jakarta.persistence.EntityNotFoundException;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
-
+import java.util.Objects;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,8 +30,7 @@ public class FilterService {
     private final ComparisonConditionRepository comparisonConditionRepository;
     private final CriteriaTypeRepository criteriaTypeRepository;
 
-    public FilterService(
-            FilterRepository filterRepository,
+    public FilterService(FilterRepository filterRepository,
             FilterCriteriaRepository filterCriteriaRepository,
             ComparisonConditionRepository comparisonConditionRepository,
             CriteriaTypeRepository criteriaTypeRepository) {
@@ -48,135 +42,90 @@ public class FilterService {
 
     public List<FilterDTO> getAllFilters() {
         return filterRepository.findAll().stream()
-                .map(filter -> new FilterDTO()
-                        .setFilterName(filter.getFilterName())
-                        .setFilterId(filter.getFilterId()))
-                .collect(Collectors.toList());
+                .map(FilterDTO::new)
+                .toList();
     }
 
     @Transactional(readOnly = true)
     public List<FilterCriteriaDTO> getFilterCriteria(Integer filterId) {
-        final List<FilterCriteria> filterCriteriaEntities = filterCriteriaRepository.findAllByFilter_FilterId(filterId);
+        final List<FilterCriteria> filterCriteriaEntities = filterCriteriaRepository.findAllByFilterId(filterId);
         return filterCriteriaEntities.stream()
-                .map(fc -> {
-                    final CriteriaType criteriaType = fc.getComparisonCondition().getCriteriaType();
-                    final Integer criteriaTypeIdValue = criteriaType != null ? criteriaType.getCriteriaTypeId() : null;
-
-                    final CriteriaTypeDTO criteriaTypeDTO = new CriteriaTypeDTO()
-                            .setCriteriaTypeId(fc.getCriteriaType().getCriteriaTypeId())
-                            .setTypeName(fc.getCriteriaType().getTypeName());
-                    final ComparisonConditionDTO comparisonConditionDTO = new ComparisonConditionDTO()
-                            .setConditionId(fc.getComparisonCondition().getConditionId())
-                            .setCriteriaTypeId(criteriaTypeIdValue)
-                            .setConditionName(fc.getComparisonCondition().getConditionName());
-
-                    return new FilterCriteriaDTO()
-                            .setCriteriaId(fc.getCriteriaId())
-                            .setFilterId(fc.getFilter().getFilterId())
-                            .setCriteriaType(criteriaTypeDTO)
-                            .setComparisonCondition(comparisonConditionDTO)
-                            .setCriteriaValue(fc.getCriteriaValue());
-                })
-                .collect(Collectors.toList());
+                .map(FilterCriteriaDTO::new)
+                .toList();
     }
 
     @Transactional
-    public FilterDTO updateFilter(Integer filterId, UpdateFilterRequest updateRequest) {
-        final Filter filter = filterRepository.findById(filterId)
+    public FilterDTO updateFilter(Integer filterId, UpdateFilterRequest request) {
+        Filter filter = filterRepository.findById(filterId)
                 .orElseThrow(() -> new EntityNotFoundException("Filter not found with id: " + filterId));
 
-        filter.setFilterName(updateRequest.getFilterName());
-        final Filter updatedFilter = filterRepository.save(filter);
+        if (!Objects.equals(filter.getName(), request.getFilterName())) {
+            filter.setName(request.getFilterName());
+            filter = filterRepository.save(filter);
+        }
+        filterCriteriaRepository.deleteAllByFilterId(filterId);
 
-        List<FilterCriteria> existingCriteria = filterCriteriaRepository.findAllByFilter_FilterId(filterId);
-        filterCriteriaRepository.deleteAll(existingCriteria);
-
-        for (FilterCriteriaDTO criteriaDTO : updateRequest.getFilterCriteria()) {
-            final CriteriaType criteriaType = criteriaTypeRepository
-                    .findById(criteriaDTO.getCriteriaType().getCriteriaTypeId())
-                    .orElseThrow(() -> new EntityNotFoundException("CriteriaType not found"));
-
+        for (FilterCriteriaDTO requestFilterCriteria : request.getFilterCriteria()) {
             final ComparisonCondition comparisonCondition = comparisonConditionRepository
-                    .findById(criteriaDTO.getComparisonCondition().getConditionId())
+                    .findById(requestFilterCriteria.getComparisonCondition().getId())
                     .orElseThrow(() -> new EntityNotFoundException("ComparisonCondition not found"));
 
-            final FilterCriteria filterCriteria = new FilterCriteria();
-            filterCriteria.setFilter(updatedFilter);
-            filterCriteria.setCriteriaType(criteriaType);
-            filterCriteria.setComparisonCondition(comparisonCondition);
-            filterCriteria.setCriteriaValue(criteriaDTO.getCriteriaValue());
+            final FilterCriteria filterCriteria = new FilterCriteria()
+                    .setFilter(filter)
+                    .setCriteriaType(comparisonCondition.getCriteriaType())
+                    .setComparisonCondition(comparisonCondition)
+                    .setValue(requestFilterCriteria.getCriteriaValue());
             filterCriteriaRepository.save(filterCriteria);
         }
 
-        return new FilterDTO()
-                .setFilterId(updatedFilter.getFilterId())
-                .setFilterName(updatedFilter.getFilterName());
+        return new FilterDTO(filter);
     }
 
     @Transactional
-    public FilterDTO createFilter(CreateFilterRequest createFilterRequest) {
-        final Filter filter = new Filter();
-        filter.setFilterName(createFilterRequest.getFilterName());
-        filter.setCreatedAt(new Date());
+    public FilterDTO createFilter(CreateFilterRequest request) {
+        final Filter filter = new Filter()
+                .setName(request.getFilterName())
+                .setCreatedAt(new Date());
 
         final Filter savedFilter = filterRepository.save(filter);
-        for (FilterCriteriaDTO criteriaDTO : createFilterRequest.getCriteria()) {
-            final FilterCriteria filterCriteria = new FilterCriteria();
-            filterCriteria.setFilter(savedFilter);
-
-            final CriteriaType criteriaType = criteriaTypeRepository
-                    .findById(criteriaDTO.getCriteriaType().getCriteriaTypeId())
+        for (FilterCriteriaDTO criteriaDTO : request.getCriteria()) {
+            final Integer criteriaTypeId = criteriaDTO.getCriteriaType().getId();
+            final CriteriaType criteriaType = criteriaTypeRepository.findById(criteriaTypeId)
                     .orElseThrow(
-                            () -> new EntityNotFoundException("CriteriaType not found with id: "
-                                    + criteriaDTO.getCriteriaType().getCriteriaTypeId()));
-            filterCriteria.setCriteriaType(criteriaType);
+                            () -> new EntityNotFoundException("CriteriaType not found with id: " + criteriaTypeId));
 
-            final ComparisonCondition comparisonCondition = comparisonConditionRepository
-                    .findById(criteriaDTO.getComparisonCondition().getConditionId())
+            final Integer conditionId = criteriaDTO.getComparisonCondition().getId();
+            final ComparisonCondition comparisonCondition = comparisonConditionRepository.findById(conditionId)
                     .orElseThrow(
-                            () -> new EntityNotFoundException("ComparisonCondition not found with id: "
-                                    + criteriaDTO.getComparisonCondition().getConditionId()));
-            filterCriteria.setComparisonCondition(comparisonCondition);
+                            () -> new EntityNotFoundException("ComparisonCondition not found with id: " + conditionId));
 
-            filterCriteria.setCriteriaValue(criteriaDTO.getCriteriaValue());
-
+            final FilterCriteria filterCriteria = new FilterCriteria()
+                    .setFilter(savedFilter)
+                    .setCriteriaType(criteriaType)
+                    .setComparisonCondition(comparisonCondition)
+                    .setValue(criteriaDTO.getCriteriaValue());
             filterCriteriaRepository.save(filterCriteria);
         }
 
-        return new FilterDTO()
-                .setFilterId(savedFilter.getFilterId())
-                .setFilterName(savedFilter.getFilterName());
+        return new FilterDTO(savedFilter);
     }
 
     @Transactional
     public void deleteFilterAndCriteria(Integer filterId) {
         final Filter filter = filterRepository.findById(filterId)
                 .orElseThrow(() -> new EntityNotFoundException("Filter not found with id: " + filterId));
-        final List<FilterCriteria> filterCriteriaList = filterCriteriaRepository
-                .findAllByFilter_FilterId(filterId);
-        filterCriteriaRepository.deleteAll(filterCriteriaList);
-
+        filterCriteriaRepository.deleteAllByFilterId(filter.getId());
         filterRepository.delete(filter);
     }
 
     public GetFilterOptionsResponse getFilterOptions() {
-        final GetFilterOptionsResponse getFilterOptionsResponse = new GetFilterOptionsResponse();
+        final List<CriteriaTypeDTO> criteriaTypes = criteriaTypeRepository.findAll().stream()
+                .map(CriteriaTypeDTO::new)
+                .toList();
+        final List<ComparisonConditionDTO> comparisonConditions = comparisonConditionRepository.findAll().stream()
+                .map(ComparisonConditionDTO::new)
+                .toList();
 
-        getFilterOptionsResponse.setCriteriaTypes(
-                criteriaTypeRepository.findAll().stream()
-                        .map(ct -> new CriteriaTypeDTO()
-                                .setCriteriaTypeId(ct.getCriteriaTypeId())
-                                .setTypeName(ct.getTypeName()))
-                        .collect(Collectors.toList()));
-
-        getFilterOptionsResponse.setComparisonConditions(
-                comparisonConditionRepository.findAll().stream()
-                        .map(cc -> new ComparisonConditionDTO()
-                                .setConditionId(cc.getConditionId())
-                                .setCriteriaTypeId(cc.getCriteriaType().getCriteriaTypeId())
-                                .setConditionName(cc.getConditionName()))
-                        .collect(Collectors.toList()));
-
-        return getFilterOptionsResponse;
+        return new GetFilterOptionsResponse(criteriaTypes, comparisonConditions);
     }
 }

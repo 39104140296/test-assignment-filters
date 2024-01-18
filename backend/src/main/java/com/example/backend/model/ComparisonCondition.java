@@ -11,26 +11,26 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "comparison_conditions")
+@Table(name = "comparison_condition")
 public class ComparisonCondition {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer conditionId;
+    private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "criteria_type_id", nullable = false)
     private CriteriaType criteriaType;
 
     @Column(nullable = false)
-    private String conditionName;
+    private String name;
 
-    public Integer getConditionId() {
-        return conditionId;
+    public Integer getId() {
+        return id;
     }
 
-    public ComparisonCondition setConditionId(Integer conditionId) {
-        this.conditionId = conditionId;
+    public ComparisonCondition setId(Integer id) {
+        this.id = id;
         return this;
     }
 
@@ -43,12 +43,12 @@ public class ComparisonCondition {
         return this;
     }
 
-    public String getConditionName() {
-        return conditionName;
+    public String getName() {
+        return name;
     }
 
-    public ComparisonCondition setConditionName(String conditionName) {
-        this.conditionName = conditionName;
+    public ComparisonCondition setName(String name) {
+        this.name = name;
         return this;
     }
 }

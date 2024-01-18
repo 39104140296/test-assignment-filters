@@ -8,12 +8,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "criteria_types")
+@Table(name = "criteria_type")
 public class CriteriaType {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer criteriaTypeId;
+    private Integer id;
 
     @Column(nullable = false)
     private String typeName;
@@ -21,12 +21,12 @@ public class CriteriaType {
     @Column(nullable = false)
     private String dataType;
 
-    public Integer getCriteriaTypeId() {
-        return criteriaTypeId;
+    public Integer getId() {
+        return id;
     }
 
-    public CriteriaType setCriteriaTypeId(Integer criteriaTypeId) {
-        this.criteriaTypeId = criteriaTypeId;
+    public CriteriaType setId(Integer id) {
+        this.id = id;
         return this;
     }
 
