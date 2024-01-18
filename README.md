@@ -51,7 +51,7 @@ The Filter Management Application enables the creation, editing, deletion, and v
    In the project root directory, execute:
 
    ```
-   docker-compose up -d
+   docker compose up -d
    ```
 
    This command will build and start the containers. The application will be accessible at http://localhost:5173/
