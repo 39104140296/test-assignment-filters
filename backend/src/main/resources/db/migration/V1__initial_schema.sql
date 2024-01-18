@@ -44,8 +44,8 @@ INSERT INTO comparison_conditions (criteria_type_id, condition_name) VALUES
 ((SELECT criteria_type_id FROM criteria_types WHERE type_name = 'Title'), 'Ends with'),
 ((SELECT criteria_type_id FROM criteria_types WHERE type_name = 'Title'), 'Equals'),
 
-((SELECT criteria_type_id FROM criteria_types WHERE type_name = 'Date'), 'From'),
 ((SELECT criteria_type_id FROM criteria_types WHERE type_name = 'Date'), 'To'),
+((SELECT criteria_type_id FROM criteria_types WHERE type_name = 'Date'), 'From'),
 ((SELECT criteria_type_id FROM criteria_types WHERE type_name = 'Date'), 'Equal');
 
 INSERT INTO filters (filter_name, created_at) VALUES 
